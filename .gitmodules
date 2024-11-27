@@ -1,4 +1,0 @@
-
-[submodule "Sources/Core/CUsb/libusb"]
-	path = Sources/Core/CUsb/libusb
-	url = https://github.com/libusb/libusb.git
