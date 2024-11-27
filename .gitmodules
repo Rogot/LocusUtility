@@ -1,0 +1,7 @@
+[submodule "Sources/Core/CUsb/libusb"]
+	path = Sources/Core/CUsb/libusb
+	url = https://github.com/libusb/libusb.git
+[submodule "Sources/DroneDevice"]
+	path = Sources/DroneDevice
+	url = git@gitlab.corp.geoscan.aero:uav-devices/DroneDevice.git
+	branch = v0.5-dev
