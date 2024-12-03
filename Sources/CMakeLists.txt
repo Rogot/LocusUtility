@@ -20,12 +20,11 @@ add_library(GlobalHandlerEventsObj OBJECT ${SOURCE_LIST_GLOBAL_HANDLER_EVENTS})
 target_include_directories(GlobalHandlerEventsObj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${GTKMM_INCLUDE_DIRS})
 target_link_libraries(GlobalHandlerEventsObj PUBLIC ${GTKMM_LIBRARIES})
 
-# Make library <CUsb>
-# file(GLOB_RECURSE SOURCE_LIST_CUSB "Core/CUsb/*.cpp")
-file(GLOB_RECURSE SOURCE_LIST_CUSB "Core/CUsb/CUsb.cpp")
-message("${SOURCE_LIST_CUSB} - SOURCE LIST (+ CUsb)")
-add_library(CUsbObj OBJECT ${SOURCE_LIST_CUSB})
-target_include_directories(CUsbObj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+# # Make library <CUsb>
+# file(GLOB_RECURSE SOURCE_LIST_CUSB "Core/CUsb/CUsb.cpp")
+# message("${SOURCE_LIST_CUSB} - SOURCE LIST (+ CUsb)")
+# add_library(CUsbObj OBJECT ${SOURCE_LIST_CUSB})
+# target_include_directories(CUsbObj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Add <Cusb>
 add_subdirectory(Core/CUsb)

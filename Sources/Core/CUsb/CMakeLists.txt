@@ -1,8 +1,9 @@
-# CMake fragment for <libusb> took from https://github.com/libusb/libusb-cmake/blob/main/CMakeLists.txt
-
+# CMake fragment from <libusb> took from https://github.com/libusb/libusb-cmake/blob/main/CMakeLists.txt
 cmake_minimum_required(VERSION 3.16)
 
 get_filename_component(LIBUSB_ROOT "libusb/libusb" ABSOLUTE)
+
+message("LIBUSB_ROOT: ${LIBUSB_ROOT}")
 
 # Get the version information from version.h ignoring the nano version as it appears in version_nano.h and so we need it?
 file(READ "${LIBUSB_ROOT}/version.h" VERSIONHEADERDATA)
@@ -123,6 +124,7 @@ set_target_properties(usb-1.0 PROPERTIES
 
 # common sources
 target_sources(usb-1.0 PRIVATE
+    "CUsb.cpp"
     "${LIBUSB_GEN_INCLUDES}/config.h"
     "${LIBUSB_ROOT}/core.c"
     "${LIBUSB_ROOT}/descriptor.c"
@@ -148,6 +150,7 @@ else()
 endif()
 
 if(WIN32)
+    message("<<< OS is Windows >>>")
     target_sources(usb-1.0 PRIVATE
         "${LIBUSB_ROOT}/libusb-1.0.def"
         "${LIBUSB_ROOT}/os/events_windows.c"
@@ -194,6 +197,7 @@ else()
         find_package(Threads REQUIRED)
         target_link_libraries(usb-1.0 PRIVATE Threads::Threads)
     elseif(ANDROID)
+        message("<<< OS is Android >>>")
         target_sources(usb-1.0 PRIVATE
             "${LIBUSB_ROOT}/os/linux_netlink.c"
             "${LIBUSB_ROOT}/os/linux_usbfs.c"
@@ -201,6 +205,7 @@ else()
         )
         target_link_libraries(usb-1.0 PRIVATE android log)
     elseif(APPLE)
+        message("<<< OS is Apple >>>")
         target_sources(usb-1.0 PRIVATE
             "${LIBUSB_ROOT}/os/darwin_usb.c"
             "${LIBUSB_ROOT}/os/darwin_usb.h"
@@ -211,10 +216,12 @@ else()
             "-framework Security"
         )
     elseif(CMAKE_SYSTEM_NAME STREQUAL "NetBSD")
+        message("<<< OS is NetBSD >>>")
         target_sources(usb-1.0 PRIVATE
             "${LIBUSB_ROOT}/os/netbsd_usb.c"
         )
     elseif(CMAKE_SYSTEM_NAME STREQUAL "OpenBSD")
+        message("<<< OS is OpenBSD >>>")
         target_sources(usb-1.0 PRIVATE
             "${LIBUSB_ROOT}/os/openbsd_usb.c"
         )
@@ -229,6 +236,7 @@ else()
 endif()
 
 if(LIBUSB_INSTALL_TARGETS)
+    message("Install USBLIB TARGETS")
     install(TARGETS usb-1.0)
     install(FILES "${LIBUSB_ROOT}/libusb.h" DESTINATION "include/libusb-1.0")
 endif()

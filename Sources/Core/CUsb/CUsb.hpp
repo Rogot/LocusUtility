@@ -11,8 +11,7 @@
 #include <cstring>
 #include <iostream>
 #include <iomanip>
-#include <libusb-1.0/libusb.h>
-// #include <DroneDevice/Include/DroneDevice/InternalDevice/InternalDevice.hpp>
+#include <Core/CUsb/libusb/libusb/libusb.h>
 
 #define CUSB_DEBUG_LIBUSB      false
 #define CUSB_DEBUG             false
@@ -27,13 +26,15 @@ public:
     
     virtual void disconnectFromDevice();
 
-    bool getDeviceList();
+    libusb_device *getDeviceList();
 
 private:
     void printDeviceList(libusb_device *aDevs_list, libusb_device_descriptor aDesc);
 
 protected:
-    libusb_device_handle *handleUsb;
+    libusb_device **devs_list = NULL;
+
+    libusb_device_handle *handleUsb = NULL;
 
     libusb_context *context = NULL;
 };

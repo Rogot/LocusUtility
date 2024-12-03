@@ -7,7 +7,8 @@
 
 #include "Core/CUsb/CUsb.hpp"
 
-CUsb::CUsb()
+CUsb::CUsb() :
+    devs_list(nullptr)
 {
     int res = 0;
     res = libusb_init(&context);
@@ -31,6 +32,7 @@ CUsb::CUsb()
 
 CUsb::~CUsb()
 {
+    libusb_free_device_list(devs_list, 1); //free the list, unref the devices in it
     disconnectFromDevice();
     libusb_exit(context);
 }
@@ -75,13 +77,12 @@ void CUsb::disconnectFromDevice()
     }
 }
 
-bool CUsb::getDeviceList()
+libusb_device *CUsb::getDeviceList()
 {
-    libusb_device **devs_list;
     size_t cnt = libusb_get_device_list(context, &devs_list);
 
     if (cnt < 0) {
-        return false;
+        return nullptr;
     }
 
     //print total number of usb devices
@@ -98,9 +99,8 @@ bool CUsb::getDeviceList()
         }
     }
     if (handleUsb) libusb_close(handleUsb);
-    libusb_free_device_list(devs_list, 1); //free the list, unref the devices in it
 
-    return true;
+    return *devs_list;
 }
 
 void CUsb::printDeviceList(libusb_device *aDevs_list, libusb_device_descriptor aDesc)
