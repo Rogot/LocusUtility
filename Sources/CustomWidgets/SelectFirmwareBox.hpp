@@ -10,6 +10,7 @@
 
 #include <map>
 #include <string>
+#include <iostream>
 
 #include <gtkmm-3.0/gtkmm/box.h>
 #include <gtkmm-3.0/gtkmm/builder.h>
@@ -17,25 +18,30 @@
 #include <gtkmm-3.0/gtkmm/label.h>
 #include <gtkmm-3.0/gtkmm/searchentry.h>
 
+#define DEBUG       false
+
 namespace LocusBiaconWidgets {
 
 class SelectFirmwareBox : public Gtk::Box {
     enum class SelectFirmwareText {
         ESP32_LABEL,
         STM32_LABEL,
-        SEARCH_BUTTON
+        SEARCH_BUTTON,
+        MAIN_LABEL
     };
     
     const std::map<SelectFirmwareText, std::string> kSearchFirmwareTextRu = {
         {SelectFirmwareText::ESP32_LABEL, "Путь для\nпрошивки ESP32"},
         {SelectFirmwareText::STM32_LABEL, "Путь для\nпрошивки STM32"},
-        {SelectFirmwareText::SEARCH_BUTTON, "Поиск"}
+        {SelectFirmwareText::SEARCH_BUTTON, "Поиск"},
+        {SelectFirmwareText::MAIN_LABEL, "Загрузка прошивки"}
     };
 
     const std::map<SelectFirmwareText, std::string> kSearchFirmwareTextEn = {
         {SelectFirmwareText::ESP32_LABEL, "Firmware\npath for ESP32"},
         {SelectFirmwareText::STM32_LABEL, "Firmware\npath for STM32"},
-        {SelectFirmwareText::SEARCH_BUTTON, "Search"}
+        {SelectFirmwareText::SEARCH_BUTTON, "Search"},
+        {SelectFirmwareText::MAIN_LABEL, "Upload firmware"}
     };
 
     const std::map<SelectFirmwareText, std::string> *kCurrentSearchFirmwareText;
@@ -72,6 +78,8 @@ private:
     Glib::RefPtr<Gtk::Label> selectFirmwareStm32Label;
     Glib::RefPtr<Gtk::Button> selectFirmwareStm32Button;            ///<! Search firmware for STM32 in OS (search using UI)
     Glib::RefPtr<Gtk::SearchEntry> selectFirmwareStm32SearchEntry;  ///<! Search firmware for STM32 in OS (write a path)
+
+    Glib::RefPtr<Gtk::Label> selectFirmwareLabel;
 };
 
 } // LocusBiaconWidgets

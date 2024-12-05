@@ -15,6 +15,10 @@ SelectFirmwareBox::SelectFirmwareBox(BaseObjectType* aCobject, const Glib::RefPt
     kCurrentSearchFirmwareText(nullptr),
     refBuilder(aBuilder)
 {
+    #if DEBUG
+    std::cout << "Constructor SelectFirmwareBox" << std::endl;
+    #endif
+
     selectFirmwareEsp32Label = Glib::RefPtr<Gtk::Label>::cast_dynamic(
         aBuilder->get_object("SelectFirmwareBoxEsp32Label")
     );
@@ -39,6 +43,10 @@ SelectFirmwareBox::SelectFirmwareBox(BaseObjectType* aCobject, const Glib::RefPt
         aBuilder->get_object("SelectFirmwareSearchEntryStm32")
     );
 
+    selectFirmwareLabel = Glib::RefPtr<Gtk::Label>::cast_dynamic(
+        aBuilder->get_object("SelectFirmwareLabel")
+    ); 
+
     definitionDefaultValues();
 }
 
@@ -49,6 +57,10 @@ SelectFirmwareBox::~SelectFirmwareBox()
 
 void SelectFirmwareBox::redefinitionLabeles()
 {
+    #if DEBUG
+    std::cout << "Redefinition labeles SelectFirmwareBox" << std::endl;
+    #endif
+    
     if (kCurrentSearchFirmwareText != nullptr) {
         if (kCurrentSearchFirmwareText == &kSearchFirmwareTextRu) {
             kCurrentSearchFirmwareText = &kSearchFirmwareTextEn;
@@ -74,10 +86,17 @@ void SelectFirmwareBox::redefinitionLabeles()
     if (selectFirmwareStm32Button) {
         selectFirmwareStm32Button->set_label(kCurrentSearchFirmwareText->at(SelectFirmwareText::SEARCH_BUTTON).c_str());
     }
+
+    if (selectFirmwareLabel) {
+        selectFirmwareLabel->set_label(kCurrentSearchFirmwareText->at(SelectFirmwareText::MAIN_LABEL).c_str());
+    }
 }
 
 void SelectFirmwareBox::definitionDefaultValues()
 {
+    #if DEBUG
+    std::cout << "Definition default values SelectFirmwareBox" << std::endl;
+    #endif
     redefinitionLabeles();
 }
 

@@ -19,6 +19,7 @@
 
 #include "Core/GlobalHandlerEvents/GlobalHandlerEvents.hpp"
 
+#define DEBUG           false
 #define DEBUG_INFO      true
 
 namespace LocusBiaconWidgets {

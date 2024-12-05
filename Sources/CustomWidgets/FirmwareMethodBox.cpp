@@ -12,9 +12,13 @@ namespace LocusBiaconWidgets {
 FirmwareMethodBox::FirmwareMethodBox(BaseObjectType* aCobject, const Glib::RefPtr<Gtk::Builder>& aBuilder) :
     Glib::ObjectBase("FMBoxLB"),
     Gtk::Box(aCobject),
-    kCirrentFirmwareMethodText{nullptr},
+    kCurrentFirmwareMethodText{nullptr},
     refBuilder(aBuilder)
 {
+    #if DEBUG
+    std::cout << "Constructor FirmwareMethodBox" << std::endl;
+    #endif
+
     methodSelector = Glib::RefPtr<Gtk::ComboBoxText>::cast_dynamic(
         aBuilder->get_object("FirmwareMethodComboBoxText")
     );
@@ -37,6 +41,9 @@ FirmwareMethodBox::~FirmwareMethodBox()
 
 void FirmwareMethodBox::definitionDefaultValues()
 {
+    #if DEBUG
+    std::cout << "Definition default values FirmwareMethodBox" << std::endl;
+    #endif
     redefinitionLabeles();
 
     for (size_t i = 0; i < kDefaultMethodsList.size(); ++i) {
@@ -47,22 +54,25 @@ void FirmwareMethodBox::definitionDefaultValues()
 
 void FirmwareMethodBox::redefinitionLabeles()
 {
-    if (kCirrentFirmwareMethodText != nullptr) {
-        if (kCirrentFirmwareMethodText == &kFirmwareMethodTextRu) {
-            kCirrentFirmwareMethodText = &kFirmwareMethodTextEn;
-        } else if (kCirrentFirmwareMethodText == &kFirmwareMethodTextEn) {
-            kCirrentFirmwareMethodText = &kFirmwareMethodTextRu;
+    #if DEBUG
+    std::cout << "Redefinition labeles FirmwareMethodBox" << std::endl;
+    #endif
+    if (kCurrentFirmwareMethodText != nullptr) {
+        if (kCurrentFirmwareMethodText == &kFirmwareMethodTextRu) {
+            kCurrentFirmwareMethodText = &kFirmwareMethodTextEn;
+        } else if (kCurrentFirmwareMethodText == &kFirmwareMethodTextEn) {
+            kCurrentFirmwareMethodText = &kFirmwareMethodTextRu;
         }
     } else {
-        kCirrentFirmwareMethodText = &kFirmwareMethodTextRu;
+        kCurrentFirmwareMethodText = &kFirmwareMethodTextRu;
     }
 
     if (methodSelectorLabel) {
-        methodSelectorLabel->set_text(kCirrentFirmwareMethodText->at(FirmwareMethodText::BOX_LABEL).c_str());
+        methodSelectorLabel->set_text(kCurrentFirmwareMethodText->at(FirmwareMethodText::BOX_LABEL).c_str());
     }
 
     if (uploadButton) {
-        uploadButton->set_label(kCirrentFirmwareMethodText->at(FirmwareMethodText::UPLOAD_BUTTON).c_str());
+        uploadButton->set_label(kCurrentFirmwareMethodText->at(FirmwareMethodText::UPLOAD_BUTTON).c_str());
     }
 }
 

@@ -12,6 +12,8 @@
 #include <iostream>
 #include <iomanip>
 #include <Core/CUsb/libusb/libusb/libusb.h>
+#include <thread>
+#include <threads.h>
 
 #define CUSB_DEBUG_LIBUSB      false
 #define CUSB_DEBUG             false
@@ -22,7 +24,7 @@ public:
 
     ~CUsb();
 
-    virtual bool connectToDevice();
+    virtual bool connectToDevice(uint16_t aVid, uint16_t aPid);
     
     virtual void disconnectFromDevice();
 

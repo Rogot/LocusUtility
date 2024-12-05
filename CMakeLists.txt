@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.13)
-project(LocusBeaconUtiliy CXX)
+
+project(LocusBeaconUtiliy
+    DESCRIPTION "A cross-platform dekstop application for Locus"
+    LANGUAGES CXX C)
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     include(FindPkgConfig)
@@ -43,7 +46,6 @@ if(WIN32)
     set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
     set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
     set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
-
     # install config files
     install(FILES
         "${CMAKE_SOURCE_DIR}/x86_64-w64-mingw32.cmake"

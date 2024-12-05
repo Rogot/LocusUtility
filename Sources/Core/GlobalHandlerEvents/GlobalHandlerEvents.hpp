@@ -11,6 +11,9 @@
 #include <functional>
 #include <string>
 #include <map>
+#include <iostream>
+
+#define DEBUG       false
 
 class GlobalHandlerEvents {
 public:

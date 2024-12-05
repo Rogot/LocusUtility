@@ -37,12 +37,12 @@ CUsb::~CUsb()
     libusb_exit(context);
 }
 
-bool CUsb::connectToDevice()
+bool CUsb::connectToDevice(uint16_t aVid, uint16_t aPid)
 {
 #ifdef CY_VID_PID
-    handleUsb = libusb_open_device_with_vid_pid(context,0x4b4,0xf1);
+    handleUsb = libusb_open_device_with_vid_pid(context, aVid, aPid);
 #else
-    handleUsb = libusb_open_device_with_vid_pid(context,0x1234,0x0005);
+    handleUsb = libusb_open_device_with_vid_pid(context, aVid, aPid);
 #endif
     if (handleUsb == 0) {
         #if CUSB_DEBUG
@@ -106,10 +106,24 @@ libusb_device *CUsb::getDeviceList()
 void CUsb::printDeviceList(libusb_device *aDevs_list, libusb_device_descriptor aDesc)
 {
     unsigned char str[2048] = {0};
+
+    const char *speed;
+
+    switch (libusb_get_device_speed(aDevs_list)) {
+	case LIBUSB_SPEED_LOW:		speed = "1.5M"; break;
+	case LIBUSB_SPEED_FULL:		speed = "12M"; break;
+	case LIBUSB_SPEED_HIGH:		speed = "480M"; break;
+	case LIBUSB_SPEED_SUPER:	speed = "5G"; break;
+	case LIBUSB_SPEED_SUPER_PLUS:	speed = "10G"; break;
+	case LIBUSB_SPEED_SUPER_PLUS_X2:	speed = "20G"; break;
+	default:			speed = "Unknown";
+	}
+
     std::cout << "Bus " << std::setfill('0') << std::setw(3) << std::hex << +libusb_get_bus_number(aDevs_list) << " "
         << "Device " << std::setfill('0') << std::setw(3) << std::hex << +libusb_get_device_address(aDevs_list) << ": "
         << "ID " << std::setfill('0') << std::setw(4) << std::hex << aDesc.idVendor << ":"
-        << std::setfill('0') << std::setw(4) << std::hex << aDesc.idProduct;
+        << std::setfill('0') << std::setw(4) << std::hex << aDesc.idProduct << "::"
+        << " Speed " << std::setfill('0') << std::setw(4) << std::hex << speed;
 
     if (libusb_open(aDevs_list, &handleUsb) == LIBUSB_SUCCESS) {
         if (aDesc.iProduct) {
@@ -118,6 +132,12 @@ void CUsb::printDeviceList(libusb_device *aDevs_list, libusb_device_descriptor a
                 std::cout << " " << s.substr(s.find_first_not_of(" \t"));
             }
         }
+        if (aDesc.iManufacturer) {
+			if (libusb_get_string_descriptor_ascii(handleUsb, aDesc.iManufacturer, str, 2048) > 0) {
+                std::string s(reinterpret_cast<char*>(str));
+                std::cout << " :: Manufacturer - " << s.substr(s.find_first_not_of(" \t"));
+            }
+		}
     } else { 
         std::cout << " -";
     }

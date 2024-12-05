@@ -12,8 +12,13 @@ namespace LocusBiaconWidgets {
 MenuBar::MenuBar(BaseObjectType* aCobject, const Glib::RefPtr<Gtk::Builder>& aBuilder) : 
     Glib::ObjectBase("MenuBarLB"),
     Gtk::MenuBar(aCobject),
-    refBuilder(aBuilder)
+    refBuilder(aBuilder),
+    kCurrentItemsText(nullptr),
+    kCurrentImageItemsText(nullptr)
 {
+    #if DEBUG
+    std::cout << "Constructor MenuBar" << std::endl;
+    #endif
     /*
     * Get MenuItems from .glade
     */
@@ -84,6 +89,9 @@ MenuBar::~MenuBar()
 
 void MenuBar::definitionDefaultValues()
 {
+    #if DEBUG
+    std::cout << "Definition default values MenuBar" << std::endl;
+    #endif
     redefinitionLabeles();
     
     if (connectImageMenuItem) {
@@ -177,6 +185,9 @@ void MenuBar::definitionDefaultValues()
 
 void MenuBar::redefinitionLabeles()
 {
+    #if DEBUG
+    std::cout << "Redefinition labeles MenuBar" << std::endl;
+    #endif
     // Change Language
     if (kCurrentItemsText != nullptr && kCurrentImageItemsText != nullptr) {
         if (kCurrentItemsText == &kMenuItemsTextRu && kCurrentImageItemsText == &kMenuImageItemsTextRu) {

@@ -62,8 +62,12 @@ function(generate_config_file)
     # Set vars that will be written into the config file.
     if(WIN32)
         set(PLATFORM_WINDOWS 1)
+        set(CMAKE_C_COMPILER  x86_64-w64-mingw32-g)
+        set(CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)
     else()
         set(PLATFORM_POSIX 1)
+        set(CMAKE_C_COMPILER  clang)
+        set(CMAKE_CXX_COMPILER  clang++)
     endif()
 
     if(LIBUSB_ENABLE_LOGGING)

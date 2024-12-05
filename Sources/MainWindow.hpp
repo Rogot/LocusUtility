@@ -16,19 +16,15 @@
 #include "CustomWidgets/FirmwareMethodBox.hpp"
 #include "CustomWidgets/MenuBar.hpp"
 #include "CustomWidgets/SelectFirmwareBox.hpp"
-#include "Core/GlobalHandlerEvents/GlobalHandlerEvents.hpp"
+#include "CustomWidgets/ConnectionDialog.hpp"
 #include "Core/CUsb/CUsb.hpp"
+#include "Core/GlobalHandlerEvents/GlobalHandlerEvents.hpp"
 
 #define DEBUG       false
 
 static constexpr char *kUiPath {"../Sources/UserInterface.glade"};
 
 class MainWindow : public Gtk::ApplicationWindow {
-private:
-    LocusBiaconWidgets::FirmwareMethodBox *fmBox;               ///<! Selection of downloadable firmware
-    LocusBiaconWidgets::MenuBar *menuBar;                       ///<! Menu bar class
-    LocusBiaconWidgets::SelectFirmwareBox *selectFirmwareBox;   ///<! Firmware control
-
 public:
     MainWindow(BaseObjectType *aCobject, const Glib::RefPtr<Gtk::Builder> &aRefBuilder);
 
@@ -85,6 +81,11 @@ private:
     Glib::RefPtr<Gtk::Application> perentApp;
     Glib::RefPtr<Gtk::Builder> refBuilder;
 
-    CUsb usb;
+private:
+	LocusBiaconWidgets::ConnectionDialog *dialog;
+	LocusBiaconWidgets::MenuBar *menuBar;                       ///<! Menu bar class
+	LocusBiaconWidgets::FirmwareMethodBox *fmBox;               ///<! Selection of downloadable firmware
+	LocusBiaconWidgets::SelectFirmwareBox *selectFirmwareBox;   ///<! Firmware control
+
 };
 #endif // SOURCES_MAINWINDOW_HPP_

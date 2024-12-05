@@ -11,12 +11,15 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <iostream>
 
 #include <gtkmm-3.0/gtkmm/box.h>
 #include <gtkmm-3.0/gtkmm/builder.h>
 #include <gtkmm-3.0/gtkmm/button.h>
 #include <gtkmm-3.0/gtkmm/comboboxtext.h>
 #include <gtkmm-3.0/gtkmm/label.h>
+
+#define DEBUG       false
 
 namespace LocusBiaconWidgets {
 
@@ -37,7 +40,7 @@ private:
         {FirmwareMethodText::UPLOAD_BUTTON, "Upload"},
     };
 
-    const std::map<FirmwareMethodText, std::string>  *kCirrentFirmwareMethodText;
+    const std::map<FirmwareMethodText, std::string>  *kCurrentFirmwareMethodText;
 
     const std::vector<std::string> kDefaultMethodsList = {
         "STM32 + ESP32",

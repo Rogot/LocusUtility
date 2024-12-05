@@ -25,11 +25,17 @@ MainWindow::~MainWindow()
     if (selectFirmwareBox != nullptr) {
         delete selectFirmwareBox;
     }
+    if (dialog != nullptr) {
+        delete dialog;
+    }
 
 }
 
 MainWindow *MainWindow::getInstance(const char* aTitle, Glib::RefPtr<Gtk::Application> &aApp)
 {
+    #if DEBUG
+    std::cout << "getInstance" << std::endl;
+    #endif
     MainWindow *result;
     Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file(kUiPath);
     builder->get_widget_derived("MainWindow", result);
@@ -45,12 +51,20 @@ MainWindow *MainWindow::getInstance(const char* aTitle, Glib::RefPtr<Gtk::Applic
 
 void MainWindow::initWidgets(Glib::RefPtr<Gtk::Builder> &aBuilder, Glib::RefPtr<Gtk::Application> &aApp)
 {
+    #if DEBUG
+    std::cout << "Init Widgets" << std::endl;
+    #endif
     perentApp = aApp;
     if (aBuilder) {
         aBuilder->get_widget_derived("FirmwareMethodBox", fmBox);
         aBuilder->get_widget_derived("MenuBar", menuBar);
         aBuilder->get_widget_derived("SelectFirmwareBox", selectFirmwareBox);
-        menuBar->setGlobalHandlerEvents(globalHandlers);
+        
+        aBuilder->get_widget_derived("ConnectionDialog", dialog);
+
+        if (menuBar) {
+            menuBar->setGlobalHandlerEvents(globalHandlers);
+        }
     }
 
     globalHandlers.addHandler("ChangeLanguage", [this]() {
@@ -74,6 +88,7 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::changeLanguage()
     fmBox->redefinitionLabeles();
     menuBar->redefinitionLabeles();
     selectFirmwareBox->redefinitionLabeles();
+    dialog->redefinitionLabeles();
     return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
 }
 
@@ -91,14 +106,10 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::connect()
     #if DEBUG
     std::cout << "Connect USB Device" << std::endl;
     #endif
-    
-    if (!usb.getDeviceList()) {
-        return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
-    }
-    
-    if (!usb.connectToDevice()) {
-        return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
-    }
 
-    return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
+    dialog->show();
+    dialog->setOwner(this);
+    set_sensitive(false);
+
+    return dialog->dialogHundler();
 }
