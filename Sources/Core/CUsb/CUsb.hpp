@@ -13,7 +13,7 @@
 #include <iomanip>
 #include <Core/CUsb/libusb/libusb/libusb.h>
 #include <thread>
-#include <threads.h>
+
 
 #define CUSB_DEBUG_LIBUSB      false
 #define CUSB_DEBUG             false

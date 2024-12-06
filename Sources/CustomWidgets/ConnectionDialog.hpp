@@ -20,6 +20,7 @@
 
 #include "Core/CUsb/CUsb.hpp"
 #include "Core/GlobalHandlerEvents/GlobalHandlerEvents.hpp"
+#include "Core/SystemSerial/SystemSerial.hpp"
 
 namespace LocusBiaconWidgets {
 

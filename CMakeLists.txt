@@ -65,10 +65,12 @@ set(SOURCE_FILES
 
 add_subdirectory(Sources)
 
-add_executable(${CMAKE_PROJECT_NAME} ${SOURCE_FILES} 
+add_executable(${CMAKE_PROJECT_NAME} 
+    ${SOURCE_FILES}
+    ${SYSTEM_SERIAL_SOURCES}
     $<TARGET_OBJECTS:CustomWidgetsObj>
     $<TARGET_OBJECTS:GlobalHandlerEventsObj>
-    # $<TARGET_OBJECTS:CUsbObj>
+    $<TARGET_OBJECTS:SystemSerialObj>
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME} usb-1.0)
