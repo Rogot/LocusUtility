@@ -13,14 +13,20 @@
 #endif
 
 #ifdef __linux__
-#include <sys/types.h>
 #include <fcntl.h>
+#include <sys/types.h>
+#include <unistd.h>
 #endif
 
+#include <algorithm>
+#include <filesystem>
+#include <iostream>
+#include <stdio.h>
 #include <string>
+#include <vector>
 
 class SystemSerial {
-private:
+public:
     enum class ErrorStatus {
         SUCCESS,                ///> All good
         ERROR_OPEN,             ///> Error open port
@@ -28,7 +34,6 @@ private:
         ERROR_RECEIVE_DATA      ///> Error during receiving data
     };
 
-public:
     struct TransferStatus {
         ErrorStatus status;
         size_t bytesTransferd;
@@ -36,10 +41,19 @@ public:
 
 public:
     SystemSerial() {}
-    virtual ~SystemSerial();
+    virtual ~SystemSerial() {}
+
+    /**
+	 * @brief Get list of available USB ports (ttyACM* or ttyUSB*)
+	 * 
+	 * @return List of ports
+	 */
+    std::vector<std::string> getAvailablePorts();
 
     ErrorStatus openPort(std::string& aPortName);
+    
     TransferStatus writeData(std::string& aDataTx, size_t aLength);
+    
     TransferStatus readData(std::string& aDataRx, size_t aLength);
 
 private:
@@ -48,22 +62,22 @@ private:
         TransferStatus tranStatus = {SystemSerial::ErrorStatus::SUCCESS, 0};
 
         #ifdef __MINGW32__ 
-        DWORD dwBytesWrite = 0; // кол-во записанных байтов
+        DWORD dwBytesWrite = 0; // the number of the writnig bytes
 
-        if(!WriteFile(hSerial, aDataTx.c_str(), aLength, &dwBytesWrite, NULL)){
+        if(!WriteFile(hSerial, aDataTx.c_str(), aLength, &dwBytesWrite, NULL)) {
             printf("Write error\r\n");
             tranStatus.status = SystemSerial::ErrorStatus::ERROR_TRANSMIT_DATA;
-            tranStatus.bytesTransferd = dwBytesWrite;
         }
+        tranStatus.bytesTransferd = dwBytesWrite;
         #endif
 
         #ifdef __linux__
-        int iOut = write(fd, aDataTx.c_str(), 1);
-        if (iOut < 0){
+        int iOut = write(fd, &aDataTx, 1);
+        if (iOut < 0) {
             printf("Write error\n");
             tranStatus.status = SystemSerial::ErrorStatus::ERROR_TRANSMIT_DATA;
-            tranStatus.bytesTransferd = iOut;
         }
+        tranStatus.bytesTransferd = iOut;
         #endif
 
         return tranStatus;
@@ -71,25 +85,33 @@ private:
 
     TransferStatus readDataImpl(std::string& aDataRx, size_t aLength)
     {
+        TransferStatus tranStatus = {SystemSerial::ErrorStatus::SUCCESS, 0};
+
         #ifdef __MINGW32__ 
-        if(!ReadFile(hSerial, aDataRx.c_str(), 1, &dwBytesWrite, NULL)){
-        printf("Read error\r\n");
+        if(!ReadFile(hSerial, aDataRx.c_str(), 1, &dwBytesWrite, NULL)) {
+            printf("Read error\r\n");
+            tranStatus.status = SystemSerial::ErrorStatus::ERROR_TRANSMIT_DATA;
         }
+        tranStatus.bytesTransferd = dwBytesWrite;
         #endif
         #ifdef __linux__
-        int iOut = read(fd, aDataRx.c_str(), 1);
-        if (iOut < 0){
+        int iOut = read(fd, &aDataRx, 1);
+        if (iOut < 0) {
             printf("Read error\n");
+            tranStatus.status = SystemSerial::ErrorStatus::ERROR_RECEIVE_DATA;
         }
+        tranStatus.bytesTransferd = iOut;
         #endif
 
-        //Закрытие порта
+        //Closing port
         #ifdef __MINGW32__ 
         CloseHandle(hSerial);
         #endif
         #ifdef __linux
         close(fd);
         #endif
+
+
     }
 
 private:

@@ -22,7 +22,7 @@
 
 #define DEBUG       false
 
-static constexpr char *kUiPath {"../Sources/UserInterface.glade"};
+static const std::string kUiPath = {"../Sources/UserInterface.glade"};
 
 class MainWindow : public Gtk::ApplicationWindow {
 public:

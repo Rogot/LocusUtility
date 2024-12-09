@@ -129,20 +129,44 @@ void ConnectionDialog::definitionDefaultValues()
     this->signal_hide().connect([&]() {
         ownerWindow->set_sensitive(true);
     }); 
+
+    resetUsbList(portsList);
 }
 
-GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::dialogHundler()
+void ConnectionDialog::resetUsbList(std::vector<std::string> &aPortList)
 {
-    libusb_device *devices = nullptr;
+    aPortList = systemSerial.getAvailablePorts();
+    portsListComboTextBox->remove_all();
     
-    if (!(devices = usb.getDeviceList())) {
-        return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
+    for (auto port : aPortList) {
+        portsListComboTextBox->append(port);
+        portsListComboTextBox->set_active_text(port);
     }
+}
 
-    // uint16_t vid = 0x4b4, pid = 0xf1;
-    uint16_t vid = 0x1234, pid = 0x0005;
+GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::dialogHandler()
+{
+    // libusb_device *devices = nullptr;
     
-    if (!usb.connectToDevice(vid, pid)) {
+    // if (!(devices = usb.getDeviceList())) {
+    //     return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
+    // }
+
+    // // uint16_t vid = 0x4b4, pid = 0xf1;
+    // uint16_t vid = 0x1234, pid = 0x0005;
+    
+    // if (!usb.connectToDevice(vid, pid)) {
+    //     return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
+    // }
+
+    #ifdef __linux__
+    std::string portName("/dev/" + portsList[0]);
+    #endif
+    #ifdef __MINGW32__
+    std::string portName(portsList[0]);
+    #endif
+
+    if (systemSerial.openPort(portName) == SystemSerial::ErrorStatus::ERROR_OPEN) {
         return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
     }
 

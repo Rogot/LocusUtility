@@ -111,5 +111,5 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::connect()
     dialog->setOwner(this);
     set_sensitive(false);
 
-    return dialog->dialogHundler();
+    return dialog->dialogHandler();
 }

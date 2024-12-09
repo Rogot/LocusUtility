@@ -103,7 +103,9 @@ void MenuBar::definitionDefaultValues()
 
             GlobalHandlerEvents::HandlerEventsStatus status = globalEvents->executeHandler("Connect");
             if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR) {
-                std::cout << "\nError with USB connection\n";
+                std::cout << "\nError with USB connection!\n";
+            } else {
+                std::cout << "\nUSB connection success!\n";
             }
         });
     }

@@ -69,7 +69,7 @@ public:
 
     virtual ~ConnectionDialog();
 
-    GlobalHandlerEvents::HandlerEventsStatus dialogHundler();
+    GlobalHandlerEvents::HandlerEventsStatus dialogHandler();
     void setOwner(Gtk::Window *aOwner);
 
     /**
@@ -86,6 +86,8 @@ protected:
 	 * @return None
 	 */
     void definitionDefaultValues();
+
+    void resetUsbList(std::vector<std::string> &aPortList);
 
 private:
     Glib::RefPtr<Gtk::Builder> refBuilder;
@@ -107,6 +109,10 @@ private:
 private:
     Gtk::Window *ownerWindow;
     CUsb usb;
+    SystemSerial systemSerial;
+
+private:
+    std::vector<std::string> portsList;
 };
 
 } // LocusBiaconWidgets
