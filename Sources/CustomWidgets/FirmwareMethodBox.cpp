@@ -46,10 +46,20 @@ void FirmwareMethodBox::definitionDefaultValues()
     #endif
     redefinitionLabeles();
 
-    for (size_t i = 0; i < kDefaultMethodsList.size(); ++i) {
-        methodSelector->append(kDefaultMethodsList[i]);
+    if (methodSelector) {
+        for (size_t i = 0; i < kDefaultMethodsList.size(); ++i) {
+            methodSelector->append(kDefaultMethodsList[i]);
+        }
+        methodSelector->set_active(0);
+
+        methodSelector->signal_changed().connect([&]() {
+            if (kDefaultMethodsList[0] == methodSelector->get_active_text()) {
+                globalEvents->executeHandler(HandlersFuncKeys::SELECT_STM32);
+            } else if (kDefaultMethodsList[1] == methodSelector->get_active_text()) {
+                globalEvents->executeHandler(HandlersFuncKeys::SELECT_ESP32);
+            }
+        });
     }
-    methodSelector->set_active(1);
 }
 
 void FirmwareMethodBox::redefinitionLabeles()

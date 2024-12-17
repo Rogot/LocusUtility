@@ -87,6 +87,7 @@ libusb_device *CUsb::getDeviceList()
 
     //print total number of usb devices
     ssize_t i; //for iterating through the list
+
     for(i = 0; i < cnt; ++i) {
         struct libusb_device_descriptor desc;
         if (libusb_get_device_descriptor(devs_list[i], &desc) >= 0) {

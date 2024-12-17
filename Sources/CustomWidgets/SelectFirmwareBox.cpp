@@ -100,4 +100,28 @@ void SelectFirmwareBox::definitionDefaultValues()
     redefinitionLabeles();
 }
 
+void SelectFirmwareBox::esp32Active()
+{
+    selectFirmwareEsp32Button->set_sensitive(true);
+    selectFirmwareEsp32SearchEntry->set_sensitive(true);
+}
+
+void SelectFirmwareBox::esp32Inactive()
+{
+    selectFirmwareEsp32Button->set_sensitive(false);
+    selectFirmwareEsp32SearchEntry->set_sensitive(false);
+}
+
+void SelectFirmwareBox::stm32Active()
+{
+    selectFirmwareStm32Button->set_sensitive(true);
+    selectFirmwareStm32SearchEntry->set_sensitive(true);
+}
+
+void SelectFirmwareBox::stm32Inactive()
+{
+    selectFirmwareStm32Button->set_sensitive(false);
+    selectFirmwareStm32SearchEntry->set_sensitive(false);
+}
+
 } // LocusBiaconWidgets

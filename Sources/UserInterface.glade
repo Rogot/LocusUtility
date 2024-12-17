@@ -86,7 +86,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBoxText" id="TepeConnectionCoboBoxText">
+                              <object class="GtkComboBoxText" id="TypeConnectionCoboBoxText">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="border-width">5</property>
@@ -279,7 +279,13 @@
                     <property name="can-focus">False</property>
                     <property name="left-padding">12</property>
                     <child>
-                      <placeholder/>
+                      <object class="GtkComboBoxText" id="ProtocolTypeCoboBoxText">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">start</property>
+                        <property name="valign">start</property>
+                        <property name="hexpand">False</property>
+                      </object>
                     </child>
                   </object>
                 </child>

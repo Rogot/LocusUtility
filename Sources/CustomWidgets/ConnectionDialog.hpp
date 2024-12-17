@@ -26,6 +26,40 @@ namespace LocusBiaconWidgets {
 
 class ConnectionDialog : public Gtk::Dialog {
 private:
+    enum class BaudrateValue {
+        BAUDRATE_2400 = 2400,
+        BAUDRATE_4800 = 4800,
+        BAUDRATE_9600 = 9600,
+        BAUDRATE_19200 = 19200,
+        BAUDRATE_38400 = 38400,
+        BAUDRATE_57600 = 57600,
+        BAUDRATE_115200 = 115200,
+        BAUDRATE_230400 = 230400,
+        BAUDRATE_460800 = 460800,
+        BAUDRATE_500000 = 500000,
+        BAUDRATE_576000 = 576000,
+        BAUDRATE_921600 = 921600,
+        BAUDRATE_1000000 = 1000000,
+        BAUDRATE_2000000 = 2000000
+    };
+
+    std::vector<int> baudrateList = {
+        static_cast<int>(BaudrateValue::BAUDRATE_2400),
+        static_cast<int>(BaudrateValue::BAUDRATE_4800),
+        static_cast<int>(BaudrateValue::BAUDRATE_9600),
+        static_cast<int>(BaudrateValue::BAUDRATE_19200),
+        static_cast<int>(BaudrateValue::BAUDRATE_38400),
+        static_cast<int>(BaudrateValue::BAUDRATE_57600),
+        static_cast<int>(BaudrateValue::BAUDRATE_115200),
+        static_cast<int>(BaudrateValue::BAUDRATE_230400),
+        static_cast<int>(BaudrateValue::BAUDRATE_460800),
+        static_cast<int>(BaudrateValue::BAUDRATE_500000),
+        static_cast<int>(BaudrateValue::BAUDRATE_576000),
+        static_cast<int>(BaudrateValue::BAUDRATE_921600),
+        static_cast<int>(BaudrateValue::BAUDRATE_1000000),
+        static_cast<int>(BaudrateValue::BAUDRATE_2000000)
+    };
+
     enum class DialogItmesText {
         CONNECTION,
         PROTOCOL,
@@ -103,6 +137,8 @@ private:
     Glib::RefPtr<Gtk::Button> dialogCloseButton;  
     Glib::RefPtr<Gtk::Button> resetSearchPortsButton;
     
+    Glib::RefPtr<Gtk::ComboBoxText> protocolTypeCoboBoxText;
+    Glib::RefPtr<Gtk::ComboBoxText> typeConnectionCoboBoxText;
     Glib::RefPtr<Gtk::ComboBoxText> portsListComboTextBox;
     Glib::RefPtr<Gtk::ComboBoxText> baudratesListComboTextBox;
 

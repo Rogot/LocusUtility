@@ -52,12 +52,20 @@ ConnectionDialog::ConnectionDialog(BaseObjectType* aCobject, const Glib::RefPtr<
         aBuilder->get_object("ResetSearchPortsButton")
     );
 
+    typeConnectionCoboBoxText = Glib::RefPtr<Gtk::ComboBoxText>::cast_dynamic(
+        aBuilder->get_object("TypeConnectionCoboBoxText")
+    );
+
     portsListComboTextBox = Glib::RefPtr<Gtk::ComboBoxText>::cast_dynamic(
         aBuilder->get_object("PortsListComboTextBox")
     );
 
     baudratesListComboTextBox = Glib::RefPtr<Gtk::ComboBoxText>::cast_dynamic(
         aBuilder->get_object("BaudratesListComboTextBox")
+    );
+
+    protocolTypeCoboBoxText = Glib::RefPtr<Gtk::ComboBoxText>::cast_dynamic(
+        aBuilder->get_object("ProtocolTypeCoboBoxText")
     );
 
     definitionDefaultValues();
@@ -119,38 +127,86 @@ void ConnectionDialog::redefinitionLabeles()
 void ConnectionDialog::definitionDefaultValues()
 {
     redefinitionLabeles();
-    
+    resetUsbList(portsList);
+
+    if (typeConnectionCoboBoxText) {
+        std::string text = kDialogItemTextEn.at(DialogItmesText::CURRENT_TYPE_TCP).c_str();
+        typeConnectionCoboBoxText->append(text);
+        text = kDialogItemTextEn.at(DialogItmesText::CURRENT_TYPE_SERIAL).c_str();
+        typeConnectionCoboBoxText->append(text);
+        typeConnectionCoboBoxText->set_active_text(text);
+    }
+
+    if (protocolTypeCoboBoxText) {
+        std::string text = "Payload";
+        protocolTypeCoboBoxText->append(text);
+        protocolTypeCoboBoxText->set_active_text(text);
+    }
+
+    if (baudratesListComboTextBox) {
+        baudratesListComboTextBox->remove_all();
+        for (auto baudrate : baudrateList) {
+            baudratesListComboTextBox->append(std::to_string(baudrate));
+        }
+        baudratesListComboTextBox->set_active_text(std::to_string(static_cast<int>(BaudrateValue::BAUDRATE_115200)));
+    }
+
     if (dialogCloseButton) {
         dialogCloseButton->signal_clicked().connect([&]() {
             hide();
         });
     }
 
+    if (dialogConnectButton) {
+        dialogConnectButton->signal_clicked().connect([&]() {
+            #ifdef __linux__
+            std::string portName;
+            if (portsList.size() > 0) {
+                portName = "/dev/" + portsListComboTextBox->get_active_text();
+            }
+            #endif
+            #ifdef __MINGW32__
+            std::string portName(portsList[0]);
+            #endif
+
+            if (systemSerial.openPort(portName) == SystemSerial::ErrorStatus::ERROR_OPEN) {
+                std::cout << "Port " << portName << " is not available!" << std::endl;
+                return;
+            }
+            std::cout << "Port " << portName << " is opened!" << std::endl;
+        });
+    }
+
+    if (resetSearchPortsButton) {
+        resetSearchPortsButton->signal_clicked().connect([&]() {
+            this->resetUsbList(portsList);
+        });
+    }
+
     this->signal_hide().connect([&]() {
         ownerWindow->set_sensitive(true);
-    }); 
-
-    resetUsbList(portsList);
+    });
 }
 
 void ConnectionDialog::resetUsbList(std::vector<std::string> &aPortList)
 {
     aPortList = systemSerial.getAvailablePorts();
-    portsListComboTextBox->remove_all();
-    
-    for (auto port : aPortList) {
-        portsListComboTextBox->append(port);
-        portsListComboTextBox->set_active_text(port);
+    if (portsListComboTextBox) { 
+        portsListComboTextBox->remove_all();
+        for (auto port : aPortList) {
+            portsListComboTextBox->append(port);
+            portsListComboTextBox->set_active_text(port);
+        }
     }
 }
 
 GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::dialogHandler()
 {
-    // libusb_device *devices = nullptr;
+    libusb_device *devices = nullptr;
     
-    // if (!(devices = usb.getDeviceList())) {
-    //     return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
-    // }
+    if (!(devices = usb.getDeviceList())) {
+        return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
+    }
 
     // // uint16_t vid = 0x4b4, pid = 0xf1;
     // uint16_t vid = 0x1234, pid = 0x0005;
@@ -158,17 +214,6 @@ GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::dialogHandler()
     // if (!usb.connectToDevice(vid, pid)) {
     //     return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
     // }
-
-    #ifdef __linux__
-    std::string portName("/dev/" + portsList[0]);
-    #endif
-    #ifdef __MINGW32__
-    std::string portName(portsList[0]);
-    #endif
-
-    if (systemSerial.openPort(portName) == SystemSerial::ErrorStatus::ERROR_OPEN) {
-        return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
-    }
 
     return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
 }

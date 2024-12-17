@@ -50,10 +50,32 @@ public:
 	 */
     std::vector<std::string> getAvailablePorts();
 
+    /**
+	 * @brief Try open serial port (ttyACM* or ttyUSB*)
+	 * 
+     * @param [aPortName] - port name
+	 * @return ErrorStatus is SUCCESS if ok, other - there is a error
+     * 
+     * @note Using port name + path to the file (in Linux)
+	 */
     ErrorStatus openPort(std::string& aPortName);
     
+    /**
+	 * @brief Write data using serial port
+	 * 
+     * @param [aDataTx] - data for transmitting
+     * @param [aLength] - data length for transmitting
+	 * @return ErrorStatus is SUCCESS if ok, other - there is a error
+	 */
     TransferStatus writeData(std::string& aDataTx, size_t aLength);
     
+    /**
+	 * @brief Read data from serial port
+	 * 
+     * @param [aDataRx] - received data
+     * @param [aLength] - data length
+	 * @return ErrorStatus is SUCCESS if ok, other - there is a error
+	 */
     TransferStatus readData(std::string& aDataRx, size_t aLength);
 
 private:
@@ -110,8 +132,6 @@ private:
         #ifdef __linux
         close(fd);
         #endif
-
-
     }
 
 private:

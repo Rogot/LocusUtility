@@ -1,5 +1,0 @@
-#
-# Media Passport.
-#
-
-uint8[<=128] pairs

@@ -76,6 +76,40 @@ private:
 	 */
 
     GlobalHandlerEvents::HandlerEventsStatus connect();
+
+    /**
+	 * @brief Function for USB disconnect
+	 *
+	 * @return None
+	 */
+
+    GlobalHandlerEvents::HandlerEventsStatus disconnect();
+
+	/**
+	 * @brief Function for enable/disable sensitive ESP32/STM32 search/download functions
+	 *
+	 * @return None
+	 */
+
+    GlobalHandlerEvents::HandlerEventsStatus selectEsp32();
+
+	/**
+	 * @brief Function for disable sensitive STM32/ESP32 search/download functions
+	 *
+	 * @return None
+	 */
+
+    GlobalHandlerEvents::HandlerEventsStatus selectStm32();
+
+private:
+	/**
+	 * @brief Init global handlers
+	 *
+	 * @return None
+	 */
+
+	void initGlobalHandlersEvents();
+
 private:
     GlobalHandlerEvents globalHandlers;
     Glib::RefPtr<Gtk::Application> perentApp;

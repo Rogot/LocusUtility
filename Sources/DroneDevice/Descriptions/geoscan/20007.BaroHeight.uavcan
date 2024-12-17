@@ -1,5 +1,0 @@
-#
-# Barometric height.
-#
-
-int32 height_mm

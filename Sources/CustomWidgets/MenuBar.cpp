@@ -101,7 +101,9 @@ void MenuBar::definitionDefaultValues()
             std::cout << "Connection/Connect" << std::endl;
             #endif
 
-            GlobalHandlerEvents::HandlerEventsStatus status = globalEvents->executeHandler("Connect");
+            GlobalHandlerEvents::HandlerEventsStatus status = globalEvents->executeHandler(
+                HandlersFuncKeys::CONNECT
+            );
             if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR) {
                 std::cout << "\nError with USB connection!\n";
             } else {
@@ -116,6 +118,15 @@ void MenuBar::definitionDefaultValues()
             #if DEBUG_INFO
             std::cout << "Connection/Disconnect" << std::endl;
             #endif
+
+            GlobalHandlerEvents::HandlerEventsStatus status = globalEvents->executeHandler(
+                HandlersFuncKeys::DISCONNECT
+            );
+            if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR) {
+                std::cout << "\nError with USB disconnection!\n";
+            } else {
+                std::cout << "\nUSB disconnection success!\n";
+            }
         });
     }
 
@@ -126,7 +137,9 @@ void MenuBar::definitionDefaultValues()
             std::cout << "Connection/Quit" << std::endl;
             #endif
 
-            GlobalHandlerEvents::HandlerEventsStatus status = globalEvents->executeHandler("QuitApp");
+            GlobalHandlerEvents::HandlerEventsStatus status = globalEvents->executeHandler(
+                HandlersFuncKeys::QUIT_APP
+            );
             if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR) {
                 std::cout << "\nError with closing\n";
             }
@@ -141,7 +154,9 @@ void MenuBar::definitionDefaultValues()
             std::cout << "Connection/Language" << std::endl;
             #endif
 
-            GlobalHandlerEvents::HandlerEventsStatus status = globalEvents->executeHandler("ChangeLanguage");
+            GlobalHandlerEvents::HandlerEventsStatus status = globalEvents->executeHandler(
+                HandlersFuncKeys::SWITCH_LANG
+            );
             if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR) {
                 std::cout << "\nError with changing language\n";
             }

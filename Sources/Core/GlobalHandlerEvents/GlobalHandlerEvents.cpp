@@ -12,7 +12,6 @@ GlobalHandlerEvents::GlobalHandlerEvents()
     #if DEBUG
     std::cout << "Constructor GlobalHandlerEvents" << std::endl;
     #endif
-
 }
 
 GlobalHandlerEvents::~GlobalHandlerEvents()
@@ -20,7 +19,7 @@ GlobalHandlerEvents::~GlobalHandlerEvents()
 
 }
 
-void GlobalHandlerEvents::addHandler(std::string aKey, EventHandler aHandler)
+void GlobalHandlerEvents::addHandler(HandlersFuncKeys aKey, EventHandler aHandler)
 {
     #if DEBUG
     std::cout << "Add handler " << aKey << std::endl;
@@ -28,7 +27,7 @@ void GlobalHandlerEvents::addHandler(std::string aKey, EventHandler aHandler)
     handlers.emplace(aKey, aHandler);
 }
 
-GlobalHandlerEvents::HandlerEventsStatus GlobalHandlerEvents::executeHandler(std::string aKey)
+GlobalHandlerEvents::HandlerEventsStatus GlobalHandlerEvents::executeHandler(HandlersFuncKeys aKey)
 {
     #if DEBUG
     std::cout << "Execute handler " << aKey << std::endl;

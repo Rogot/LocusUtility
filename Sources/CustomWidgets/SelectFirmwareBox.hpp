@@ -18,6 +18,8 @@
 #include <gtkmm-3.0/gtkmm/label.h>
 #include <gtkmm-3.0/gtkmm/searchentry.h>
 
+#include "Core/GlobalHandlerEvents/GlobalHandlerEvents.hpp"
+
 #define DEBUG       false
 
 namespace LocusBiaconWidgets {
@@ -59,6 +61,47 @@ public:
 
     void redefinitionLabeles();
 
+    /**
+	 * @brief Set global handler event ptr
+	 *
+     * @param [aGlobalEvents] Global handler event object
+	 * @return None
+	 */
+
+    void setGlobalHandlerEvents(GlobalHandlerEvents &aGlobalEvents) { globalEvents = &aGlobalEvents; }
+
+    /**
+	 * @brief Set esp32 widgets inactive
+	 *
+	 * @return None
+	 */
+    
+    void esp32Inactive();
+
+    /**
+	 * @brief Set esp32 widgets active
+	 *
+	 * @return None
+	 */
+    
+    void esp32Active();
+    
+    /**
+	 * @brief Set stm32 widgets inactive
+	 *
+	 * @return None
+	 */
+
+    void stm32Inactive();
+
+    /**
+	 * @brief Set stm32 widgets active
+	 *
+	 * @return None
+	 */
+
+    void stm32Active();
+
 protected:
     /**
 	 * @brief Set standard values for an object of the SelectFirmwareBox class
@@ -80,6 +123,9 @@ private:
     Glib::RefPtr<Gtk::SearchEntry> selectFirmwareStm32SearchEntry;  ///<! Search firmware for STM32 in OS (write a path)
 
     Glib::RefPtr<Gtk::Label> selectFirmwareLabel;
+
+private:
+    GlobalHandlerEvents *globalEvents;
 };
 
 } // LocusBiaconWidgets

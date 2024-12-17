@@ -4,15 +4,33 @@ project(LocusBeaconUtiliy
     DESCRIPTION "A cross-platform dekstop application for Locus"
     LANGUAGES CXX C)
 
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    include(FindPkgConfig)
-    if(PKG_CONFIG_FOUND)
-        find_package(PkgConfig REQUIRED)
-        pkg_check_modules(GTKMM REQUIRED IMPORTED_TARGET gtkmm-3.0 glibmm-2.4)
-    else()
-        message(FATAL_ERROR " >>>> pkg-config was not found! >>>>" )
-    endif()
+# if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+include(FindPkgConfig)
+if(PKG_CONFIG_FOUND)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(GTKMM REQUIRED IMPORTED_TARGET gtkmm-3.0 glibmm-2.4)
+    message(">>>> pkg-config was found! >>>>" )
+else()
+    message(FATAL_ERROR " >>>> pkg-config was NOT found! >>>>" )
 endif()
+# endif()
+
+# if(WIN32)
+# # Including DLL libraries for Windows
+#     set(DLL_PATH ./WindowsDLL/)
+
+#     add_library(dll_win SHARED IMPORTED)
+#     set_property(TARGET dll_win PROPERTY
+#             IMPORTED_LOCATION 
+#             ${DLL_PATH}/libatkmm-1.6.dll.a
+#             ${DLL_PATH}/libglib-2.0.dll.a
+#             ${DLL_PATH}/libgiomm-2.4.dll.a)
+#     set_property(TARGET dll_win PROPERTY
+#             IMPORTED_IMPLIB 
+#             ${DLL_PATH}/libatkmm-1.6.dll.a
+#             ${DLL_PATH}/libglib-2.0.dll.a
+#             ${DLL_PATH}/libgiomm-2.4.dll.a)
+# endif()
 
 if(WIN32)
     set(PROJECT_BINARY_DIR "${PROJECT_SOURCE_DIR}/build_windows")
@@ -46,10 +64,9 @@ if(WIN32)
     set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
     set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
     set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
-    # install config files
-    install(FILES
-        "${CMAKE_SOURCE_DIR}/x86_64-w64-mingw32.cmake"
-        DESTINATION ${CMAKE_SOURCE_DIR}/x86_64-w64-mingw32.cmake)
+    # install(FILES
+    #     "${CMAKE_SOURCE_DIR}/x86_64-w64-mingw32.cmake"
+    #     DESTINATION ${CMAKE_SOURCE_DIR}/x86_64-w64-mingw32.cmake)
 
 elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(CMAKE_EXECUTABLE_SUFFIX ".elf")
@@ -63,11 +80,17 @@ set(SOURCE_FILES
     Sources/MainWindow.cpp
 )
 
+# Add <Sources> subdir
 add_subdirectory(Sources)
+
+# Add <DroneDevice> subdir
+add_subdirectory(Sources/DroneDevice)
+
+# Add <Cusb> subdir
+add_subdirectory(Sources/Core/CUsb)
 
 add_executable(${CMAKE_PROJECT_NAME} 
     ${SOURCE_FILES}
-    ${SYSTEM_SERIAL_SOURCES}
     $<TARGET_OBJECTS:CustomWidgetsObj>
     $<TARGET_OBJECTS:GlobalHandlerEventsObj>
     $<TARGET_OBJECTS:SystemSerialObj>
@@ -75,12 +98,15 @@ add_executable(${CMAKE_PROJECT_NAME}
 
 target_link_libraries(${CMAKE_PROJECT_NAME} usb-1.0)
 
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    if (GTKMM_FOUND)
-        message(" >>>> Gtkmm was found! >>>>")
+if (WIN32)
+target_link_libraries(${CMAKE_PROJECT_NAME} dll_win)
+endif()
 
-        target_link_libraries(${CMAKE_PROJECT_NAME} ${GTKMM_LIBRARIES})
-        target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${GTKMM_INCLUDE_DIRS})
-        target_compile_options(${CMAKE_PROJECT_NAME} PUBLIC ${GTKMM_CFLAGS_OTHER})
-    endif()
+if (GTKMM_FOUND)
+    message(" >>>> Gtkmm was found! >>>>")
+    target_link_libraries(${CMAKE_PROJECT_NAME} ${GTKMM_LIBRARIES})
+    target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${GTKMM_INCLUDE_DIRS})
+    target_compile_options(${CMAKE_PROJECT_NAME} PUBLIC ${GTKMM_CFLAGS_OTHER})
+else()
+    message(" >>>> Gtkmm was NOT found! >>>>")
 endif()

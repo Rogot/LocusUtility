@@ -1,3 +1,0 @@
-[submodule "Libs/libcanard"]
-	path = Libs/libcanard
-	url = ../../uav-devices/libcanard.git

@@ -19,6 +19,8 @@
 #include <gtkmm-3.0/gtkmm/comboboxtext.h>
 #include <gtkmm-3.0/gtkmm/label.h>
 
+#include "Core/GlobalHandlerEvents/GlobalHandlerEvents.hpp"
+
 #define DEBUG       false
 
 namespace LocusBiaconWidgets {
@@ -43,7 +45,6 @@ private:
     const std::map<FirmwareMethodText, std::string>  *kCurrentFirmwareMethodText;
 
     const std::vector<std::string> kDefaultMethodsList = {
-        "STM32 + ESP32",
         "STM32",
         "ESP32"
     };
@@ -60,6 +61,14 @@ public:
 	 */
     void redefinitionLabeles();
 
+    /**
+	 * @brief Set global handler event ptr
+	 *
+     * @param [aGlobalEvents] Global handler event object
+	 * @return None
+	 */
+    void setGlobalHandlerEvents(GlobalHandlerEvents &aGlobalEvents) { globalEvents = &aGlobalEvents; }
+
 protected:
     /**
 	 * @brief Set standard values for an object of the FirmwareMethodComboBox class
@@ -75,6 +84,9 @@ private:
     Glib::RefPtr<Gtk::Label> methodSelectorLabel;   ///<! Lable with description of block
 
     Glib::RefPtr<Gtk::Button> uploadButton;          ///<! Lable with description of block
+
+private:
+    GlobalHandlerEvents *globalEvents;
 };
 
 } // LocusBiacon

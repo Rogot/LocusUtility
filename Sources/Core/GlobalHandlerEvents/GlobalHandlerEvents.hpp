@@ -13,6 +13,8 @@
 #include <map>
 #include <iostream>
 
+#include "Core/GlobalHandlerEvents/GlobalDefs.hpp"
+
 #define DEBUG       false
 
 class GlobalHandlerEvents {
@@ -36,7 +38,7 @@ public:
      * @param [aHandler] A function executed by a key
 	 * @return None
 	 */
-    void addHandler(std::string aKey, EventHandler aHandler);
+    void addHandler(HandlersFuncKeys aKey, EventHandler aHandler);
 
     /**
 	 * @brief Execute the function by key
@@ -44,10 +46,10 @@ public:
      * @param [aKey] The key by which the desired function will be located
 	 * @return Handler events status is HANDLE if all good, other is ERROR
 	 */
-    HandlerEventsStatus executeHandler(std::string aKey);
+    HandlerEventsStatus executeHandler(HandlersFuncKeys aKey);
 
 private:
-    std::map<std::string, EventHandler> handlers;
+    std::map<HandlersFuncKeys, EventHandler> handlers;
 };
 
 #endif // SOURCES_CORE_GLOBALHANDLEREVENTS_GLOBALHANDLEREVENTS_HPP_
