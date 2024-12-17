@@ -15,6 +15,7 @@
 #include <gtkmm-3.0/gtkmm/box.h>
 #include <gtkmm-3.0/gtkmm/builder.h>
 #include <gtkmm-3.0/gtkmm/button.h>
+#include <gtkmm-3.0/gtkmm/filechooserdialog.h>
 #include <gtkmm-3.0/gtkmm/label.h>
 #include <gtkmm-3.0/gtkmm/searchentry.h>
 

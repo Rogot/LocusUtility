@@ -20,6 +20,7 @@
 #include <gtkmm-3.0/gtkmm/label.h>
 
 #include "Core/GlobalHandlerEvents/GlobalHandlerEvents.hpp"
+#include "CustomWidgets/OpenFileDialog.hpp"
 
 #define DEBUG       false
 
@@ -86,6 +87,7 @@ private:
     Glib::RefPtr<Gtk::Button> uploadButton;          ///<! Lable with description of block
 
 private:
+    LocusBiaconWidgets::OpenFileDialog *openFileDialog;
     GlobalHandlerEvents *globalEvents;
 };
 

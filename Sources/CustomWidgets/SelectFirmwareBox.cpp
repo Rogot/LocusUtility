@@ -98,6 +98,30 @@ void SelectFirmwareBox::definitionDefaultValues()
     std::cout << "Definition default values SelectFirmwareBox" << std::endl;
     #endif
     redefinitionLabeles();
+
+    if (selectFirmwareStm32Button) {
+        selectFirmwareStm32Button->signal_clicked().connect([&]() {
+            GlobalHandlerEvents::HandlerEventsStatus status = globalEvents->executeHandler(HandlersFuncKeys::SEARCH_FILE_STM32);
+
+            if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER) {
+                std::cout << "\nError with Open File for STM32!\n";
+            } else {
+                std::cout << "\nOpen File for STM32 is success!\n";
+            }
+        });
+    }
+
+    if (selectFirmwareEsp32Button) {
+        selectFirmwareEsp32Button->signal_clicked().connect([&]() {
+            GlobalHandlerEvents::HandlerEventsStatus status = globalEvents->executeHandler(HandlersFuncKeys::SEARCH_FILE_ESP32);
+            
+            if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER) {
+                std::cout << "\nError with Open File for ESP32!\n";
+            } else {
+                std::cout << "\nOpen File for ESP32 is success!\n";
+            }
+        });
+    }
 }
 
 void SelectFirmwareBox::esp32Active()

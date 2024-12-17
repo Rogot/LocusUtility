@@ -1,7 +1,5 @@
 message("Sources current CMAKE dir: ${CMAKE_CURRENT_LIST_DIR}")
 
-include_directories("${CMAKE_CURRENT_LIST_DIR}/CustomWidgets")
-
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CustomWidgets" ${CMAKE_MODULE_PATH})
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Core/GlobalHandlerEvents" ${CMAKE_MODULE_PATH})
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Core/CUsb" ${CMAKE_MODULE_PATH})
@@ -26,9 +24,3 @@ message("${SOURCE_LIST_SYSTEMSERIAL} - SOURCE LIST (+ SystemSerial)")
 add_library(SystemSerialObj OBJECT ${SOURCE_LIST_SYSTEMSERIAL})
 target_include_directories(SystemSerialObj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${GTKMM_INCLUDE_DIRS})
 target_link_libraries(SystemSerialObj PUBLIC usb-1.0)
-
-# Add <Cusb>
-add_subdirectory(Core/CUsb)
-
-# Add <DroneDevice> submodule
-add_subdirectory(DroneDevice)

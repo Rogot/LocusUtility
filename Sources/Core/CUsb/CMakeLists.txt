@@ -1,4 +1,4 @@
-# CMake fragment from <libusb> took from https://github.com/libusb/libusb-cmake/blob/main/CMakeLists.txt
+# CMake fragment for <libusb> took from https://github.com/libusb/libusb-cmake/blob/main/CMakeLists.txt
 cmake_minimum_required(VERSION 3.16)
 
 get_filename_component(LIBUSB_ROOT "libusb/libusb" ABSOLUTE)

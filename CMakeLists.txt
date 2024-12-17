@@ -98,9 +98,9 @@ add_executable(${CMAKE_PROJECT_NAME}
 
 target_link_libraries(${CMAKE_PROJECT_NAME} usb-1.0)
 
-if (WIN32)
-target_link_libraries(${CMAKE_PROJECT_NAME} dll_win)
-endif()
+# if (WIN32)
+# target_link_libraries(${CMAKE_PROJECT_NAME} dll_win)
+# endif()
 
 if (GTKMM_FOUND)
     message(" >>>> Gtkmm was found! >>>>")

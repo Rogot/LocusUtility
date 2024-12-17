@@ -25,10 +25,9 @@ MainWindow::~MainWindow()
     if (selectFirmwareBox != nullptr) {
         delete selectFirmwareBox;
     }
-    if (dialog != nullptr) {
-        delete dialog;
+    if (connectionDialog != nullptr) {
+        delete connectionDialog;
     }
-
 }
 
 MainWindow *MainWindow::getInstance(const char* aTitle, Glib::RefPtr<Gtk::Application> &aApp)
@@ -55,6 +54,7 @@ void MainWindow::initWidgets(Glib::RefPtr<Gtk::Builder> &aBuilder, Glib::RefPtr<
     std::cout << "Init Widgets" << std::endl;
     #endif
     perentApp = aApp;
+    refBuilder = aBuilder;
 
     initGlobalHandlersEvents();
 
@@ -62,8 +62,7 @@ void MainWindow::initWidgets(Glib::RefPtr<Gtk::Builder> &aBuilder, Glib::RefPtr<
         aBuilder->get_widget_derived("FirmwareMethodBox", fmBox);
         aBuilder->get_widget_derived("MenuBar", menuBar);
         aBuilder->get_widget_derived("SelectFirmwareBox", selectFirmwareBox);
-        
-        aBuilder->get_widget_derived("ConnectionDialog", dialog);
+        aBuilder->get_widget_derived("ConnectionDialog", connectionDialog);
 
         if (menuBar) {
             menuBar->setGlobalHandlerEvents(globalHandlers);
@@ -85,23 +84,33 @@ void MainWindow::initGlobalHandlersEvents()
     });
 
     globalHandlers.addHandler(HandlersFuncKeys::QUIT_APP, [this]() {
-       return this->quitApp();
+        return this->quitApp();
     });
 
     globalHandlers.addHandler(HandlersFuncKeys::CONNECT, [this]() {
-       return this->connect();
+        return this->connect();
     });
 
     globalHandlers.addHandler(HandlersFuncKeys::DISCONNECT, [this]() {
-       return this->disconnect();
+        return this->disconnect();
     });
 
     globalHandlers.addHandler(HandlersFuncKeys::SELECT_STM32, [this]() {
-       return this->selectStm32();
+        return this->selectStm32();
     });
 
     globalHandlers.addHandler(HandlersFuncKeys::SELECT_ESP32, [this]() {
-       return this->selectEsp32();
+        return this->selectEsp32();
+    });
+
+    globalHandlers.addHandler(HandlersFuncKeys::SEARCH_FILE_STM32, [this]() {
+        HandlersFuncKeys handleKey = HandlersFuncKeys::SEARCH_FILE_STM32;
+        return this->searchFile(handleKey);
+    });
+
+    globalHandlers.addHandler(HandlersFuncKeys::SEARCH_FILE_ESP32, [this]() {
+        HandlersFuncKeys handleKey = HandlersFuncKeys::SEARCH_FILE_ESP32;
+        return this->searchFile(handleKey);
     });
 }
 
@@ -113,7 +122,7 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::changeLanguage()
     if (fmBox) { fmBox->redefinitionLabeles(); }
     if (menuBar) { menuBar->redefinitionLabeles(); }
     if (selectFirmwareBox) { selectFirmwareBox->redefinitionLabeles(); }
-    if (dialog) { dialog->redefinitionLabeles(); }
+    if (connectionDialog) { connectionDialog->redefinitionLabeles(); }
     return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
 }
 
@@ -131,15 +140,15 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::connect()
     #if DEBUG
     std::cout << "Connect USB Device" << std::endl;
     #endif
-    if (dialog) { 
-        dialog->show();
-        dialog->setOwner(this);
+    if (connectionDialog) { 
+        connectionDialog->show();
+        connectionDialog->setOwner(this);
         set_sensitive(false);
 
-        return dialog->dialogEnter();
+        return connectionDialog->dialogEnter();
     }
 
-    return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
+    return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
 }
 
 GlobalHandlerEvents::HandlerEventsStatus MainWindow::disconnect()
@@ -147,10 +156,10 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::disconnect()
     #if DEBUG
     std::cout << "Disconnect USB Device" << std::endl;
     #endif
-    if (dialog) { 
-        return dialog->disconnect();
+    if (connectionDialog) { 
+        return connectionDialog->disconnect();
     }
-    return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
+    return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
 }
 
 GlobalHandlerEvents::HandlerEventsStatus MainWindow::selectEsp32()
@@ -164,7 +173,7 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::selectEsp32()
         return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
     }
 
-    return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
+    return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
 }
 
 GlobalHandlerEvents::HandlerEventsStatus MainWindow::selectStm32()
@@ -178,5 +187,24 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::selectStm32()
         return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
     }
 
-    return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
+    return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
+}
+
+GlobalHandlerEvents::HandlerEventsStatus MainWindow::searchFile(HandlersFuncKeys &aKey)
+{
+    #if DEBUG
+    std::cout << "Start searching file" << std::endl;
+    #endif
+
+    LocusBiaconWidgets::OpenFileDialog *openFileDialog;
+    refBuilder->get_widget_derived("MenuBar", openFileDialog);
+    openFileDialog->setOwner(this);
+
+
+
+    if (openFileDialog) {
+        delete openFileDialog;
+    }
+    
+    return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
 }

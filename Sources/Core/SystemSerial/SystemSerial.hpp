@@ -11,7 +11,6 @@
 #ifdef __MINGW32__
 #include <windows.h>
 #endif
-
 #ifdef __linux__
 #include <fcntl.h>
 #include <sys/types.h>
@@ -30,6 +29,7 @@ public:
     enum class ErrorStatus {
         SUCCESS,                ///> All good
         ERROR_OPEN,             ///> Error open port
+        ERROR_CLOSE,            ///> Error cloese port
         ERROR_TRANSMIT_DATA,    ///> Error during transmitting data
         ERROR_RECEIVE_DATA      ///> Error during receiving data
     };
@@ -59,6 +59,14 @@ public:
      * @note Using port name + path to the file (in Linux)
 	 */
     ErrorStatus openPort(std::string& aPortName);
+    
+    /**
+	 * @brief Try close serial port (ttyACM* or ttyUSB*)
+	 * 
+     * @param [aPortName] - port name
+	 * @return ErrorStatus is SUCCESS if ok, other - there is a error
+	 */
+    ErrorStatus closePort(std::string& aPortName);
     
     /**
 	 * @brief Write data using serial port
@@ -109,10 +117,12 @@ private:
     {
         TransferStatus tranStatus = {SystemSerial::ErrorStatus::SUCCESS, 0};
 
-        #ifdef __MINGW32__ 
+        #ifdef __MINGW32__
+        DWORD dwBytesWrite = 0; // the number of the writnig bytes
         if(!ReadFile(hSerial, aDataRx.c_str(), 1, &dwBytesWrite, NULL)) {
             printf("Read error\r\n");
-            tranStatus.status = SystemSerial::ErrorStatus::ERROR_TRANSMIT_DATA;
+            CloseHandle(hSerial);
+            tranStatus.status = SystemSerial::ErrorStatus::ERROR_RECEIVE_DATA;
         }
         tranStatus.bytesTransferd = dwBytesWrite;
         #endif

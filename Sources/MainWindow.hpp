@@ -13,11 +13,12 @@
 #include <gtkmm-3.0/gtkmm/applicationwindow.h>
 #include <gtkmm-3.0/gtkmm/builder.h>
 
+#include "CustomWidgets/ConnectionDialog.hpp"
 #include "CustomWidgets/FirmwareMethodBox.hpp"
 #include "CustomWidgets/MenuBar.hpp"
-#include "CustomWidgets/SelectFirmwareBox.hpp"
-#include "CustomWidgets/ConnectionDialog.hpp"
 #include "Core/CUsb/CUsb.hpp"
+#include "CustomWidgets/SelectFirmwareBox.hpp"
+#include "CustomWidgets/OpenFileDialog.hpp"
 #include "Core/GlobalHandlerEvents/GlobalHandlerEvents.hpp"
 
 #define DEBUG       false
@@ -101,6 +102,14 @@ private:
 
     GlobalHandlerEvents::HandlerEventsStatus selectStm32();
 
+	/**
+	 * @brief Function for open search dialog window
+	 *
+	 * @return None
+	 */
+
+    GlobalHandlerEvents::HandlerEventsStatus searchFile(HandlersFuncKeys &aKey);
+
 private:
 	/**
 	 * @brief Init global handlers
@@ -116,7 +125,7 @@ private:
     Glib::RefPtr<Gtk::Builder> refBuilder;
 
 private:
-	LocusBiaconWidgets::ConnectionDialog *dialog;
+	LocusBiaconWidgets::ConnectionDialog *connectionDialog;
 	LocusBiaconWidgets::MenuBar *menuBar;                       ///<! Menu bar class
 	LocusBiaconWidgets::FirmwareMethodBox *fmBox;               ///<! Selection of downloadable firmware
 	LocusBiaconWidgets::SelectFirmwareBox *selectFirmwareBox;   ///<! Firmware control

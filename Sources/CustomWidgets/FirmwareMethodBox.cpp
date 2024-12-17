@@ -13,6 +13,7 @@ FirmwareMethodBox::FirmwareMethodBox(BaseObjectType* aCobject, const Glib::RefPt
     Glib::ObjectBase("FMBoxLB"),
     Gtk::Box(aCobject),
     kCurrentFirmwareMethodText{nullptr},
+    openFileDialog(nullptr),
     refBuilder(aBuilder)
 {
     #if DEBUG
@@ -36,7 +37,9 @@ FirmwareMethodBox::FirmwareMethodBox(BaseObjectType* aCobject, const Glib::RefPt
 
 FirmwareMethodBox::~FirmwareMethodBox()
 {
-
+    if (openFileDialog) {
+        delete openFileDialog;
+    }
 }
 
 void FirmwareMethodBox::definitionDefaultValues()
@@ -58,6 +61,10 @@ void FirmwareMethodBox::definitionDefaultValues()
             } else if (kDefaultMethodsList[1] == methodSelector->get_active_text()) {
                 globalEvents->executeHandler(HandlersFuncKeys::SELECT_ESP32);
             }
+        });
+
+        uploadButton->signal_clicked().connect([&]() {
+            
         });
     }
 }

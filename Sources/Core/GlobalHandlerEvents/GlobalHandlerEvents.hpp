@@ -20,8 +20,8 @@
 class GlobalHandlerEvents {
 public:
     enum class HandlerEventsStatus {
-        HANDLE,
-        ERROR
+        HANDLE,             ///> Function handle is success
+        ERROR_HANDLER       ///> Function handle final with error
     };
 
 public:

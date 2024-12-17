@@ -11,11 +11,17 @@
 #include <map>
 #include <iostream>
 #include <string>
+#ifdef __linux__
+#include <sys/statvfs.h>
+#include <termios.h>
+#endif
 #include <gtkmm-3.0/gtkmm/builder.h>
 #include <gtkmm-3.0/gtkmm/button.h>
 #include <gtkmm-3.0/gtkmm/comboboxtext.h>
 #include <gtkmm-3.0/gtkmm/dialog.h>
+#include <gtkmm-3.0/gtkmm/entry.h>
 #include <gtkmm-3.0/gtkmm/frame.h>
+#include <gtkmm-3.0/gtkmm/notebook.h>
 #include <gtkmm-3.0/gtkmm/window.h>
 
 #include "Core/CUsb/CUsb.hpp"
@@ -69,7 +75,16 @@ private:
         PORT,
         BAUDRATE,
         CONNECTION_BUTTON,
-        CLOSE_BUTTON
+        CLOSE_BUTTON,
+        VID_LABEL,
+        PID_LABEL,
+        PAGE_COM_LABEL,
+        PAGE_VID_PID_LABEL
+    };
+
+    enum class Pages {
+        COM_PAGE = 0,
+        VID_PID_PAGE = 1
     };
 
     const std::map<DialogItmesText, std::string> kDialogItemTextRu = {
@@ -81,7 +96,11 @@ private:
         {DialogItmesText::PORT, "Порт"},
         {DialogItmesText::BAUDRATE, "Скорость в бодах"},
         {DialogItmesText::CONNECTION_BUTTON, "Подключить"},
-        {DialogItmesText::CLOSE_BUTTON, "Закрыть"}
+        {DialogItmesText::CLOSE_BUTTON, "Закрыть"},
+        {DialogItmesText::VID_LABEL, "ID Производителя (VID)"},
+        {DialogItmesText::PID_LABEL, "ID Устройства (PID)"},
+        {DialogItmesText::PAGE_COM_LABEL, "COM"},
+        {DialogItmesText::PAGE_VID_PID_LABEL, "VID/PID"}
     };
 
     const std::map<DialogItmesText, std::string> kDialogItemTextEn = {
@@ -93,7 +112,11 @@ private:
         {DialogItmesText::PORT, "Port"},
         {DialogItmesText::BAUDRATE, "Baudrate"},
         {DialogItmesText::CONNECTION_BUTTON, "Connect"},
-        {DialogItmesText::CLOSE_BUTTON, "Close"}
+        {DialogItmesText::CLOSE_BUTTON, "Close"},
+        {DialogItmesText::VID_LABEL, "Vendor ID"},
+        {DialogItmesText::PID_LABEL, "Product ID"},
+        {DialogItmesText::PAGE_COM_LABEL, "COM"},
+        {DialogItmesText::PAGE_VID_PID_LABEL, "VID/PID"}
     };
 
     const std::map<DialogItmesText, std::string> *kCurrentDialogItemText = nullptr;
@@ -103,7 +126,8 @@ public:
 
     virtual ~ConnectionDialog();
 
-    GlobalHandlerEvents::HandlerEventsStatus dialogHandler();
+    GlobalHandlerEvents::HandlerEventsStatus dialogEnter();
+    
     void setOwner(Gtk::Window *aOwner);
 
     /**
@@ -113,6 +137,9 @@ public:
 	 */
     void redefinitionLabeles();
 
+    GlobalHandlerEvents::HandlerEventsStatus disconnect();
+
+    GlobalHandlerEvents::HandlerEventsStatus connect();
 protected:
     /**
 	 * @brief Set standard values for an object of the MenuBar class
@@ -123,6 +150,8 @@ protected:
 
     void resetUsbList(std::vector<std::string> &aPortList);
 
+    void setPage(int aPageNum) { currentPage = aPageNum; }
+
 private:
     Glib::RefPtr<Gtk::Builder> refBuilder;
 
@@ -132,15 +161,24 @@ private:
     Glib::RefPtr<Gtk::Label> currentTypeConnectionLable;
     Glib::RefPtr<Gtk::Label> portLabel;
     Glib::RefPtr<Gtk::Label> baudrateLabel;
+    Glib::RefPtr<Gtk::Label> vidLabel;
+    Glib::RefPtr<Gtk::Label> pidLabel;
+    Glib::RefPtr<Gtk::Label> connectionPortPage;
+    Glib::RefPtr<Gtk::Label> connectionVidPidPage;
+
+    Glib::RefPtr<Gtk::Entry> vidEntry;
+    Glib::RefPtr<Gtk::Entry> pidEntry;
 
     Glib::RefPtr<Gtk::Button> dialogConnectButton;
     Glib::RefPtr<Gtk::Button> dialogCloseButton;  
     Glib::RefPtr<Gtk::Button> resetSearchPortsButton;
     
-    Glib::RefPtr<Gtk::ComboBoxText> protocolTypeCoboBoxText;
-    Glib::RefPtr<Gtk::ComboBoxText> typeConnectionCoboBoxText;
+    Glib::RefPtr<Gtk::ComboBoxText> protocolTypeComboBoxText;
+    Glib::RefPtr<Gtk::ComboBoxText> typeConnectionComboBoxText;
     Glib::RefPtr<Gtk::ComboBoxText> portsListComboTextBox;
     Glib::RefPtr<Gtk::ComboBoxText> baudratesListComboTextBox;
+
+    Glib::RefPtr<Gtk::Notebook> serialNotebook;
 
 private:
     Gtk::Window *ownerWindow;
@@ -149,6 +187,11 @@ private:
 
 private:
     std::vector<std::string> portsList;
+    
+    uint16_t currentPage;
+    uint16_t idVid;
+    uint16_t idPid;
+    bool is_connected;
 };
 
 } // LocusBiaconWidgets

@@ -86,7 +86,7 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBoxText" id="TypeConnectionCoboBoxText">
+                              <object class="GtkComboBoxText" id="TypeConnectionComboBoxText">
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="border-width">5</property>
@@ -117,23 +117,74 @@
                                 <property name="can-focus">False</property>
                                 <property name="left-padding">12</property>
                                 <child>
-                                  <object class="GtkBox">
+                                  <object class="GtkNotebook" id="SerialNotebook">
                                     <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="orientation">vertical</property>
+                                    <property name="can-focus">True</property>
+                                    <property name="show-border">False</property>
                                     <child>
                                       <object class="GtkBox">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
+                                        <property name="orientation">vertical</property>
                                         <child>
-                                          <object class="GtkLabel" id="PortLabel">
+                                          <object class="GtkBox">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
-                                            <property name="margin-start">5</property>
-                                            <property name="margin-end">5</property>
-                                            <property name="margin-top">5</property>
-                                            <property name="margin-bottom">5</property>
-                                            <property name="label" translatable="yes">label</property>
+                                            <child>
+                                              <object class="GtkLabel" id="PortLabel">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="margin-start">5</property>
+                                                <property name="margin-end">5</property>
+                                                <property name="margin-top">5</property>
+                                                <property name="margin-bottom">5</property>
+                                                <property name="label" translatable="yes">label</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkButton" id="ResetSearchPortsButton">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="receives-default">True</property>
+                                                <property name="margin-start">5</property>
+                                                <property name="margin-end">5</property>
+                                                <property name="margin-top">5</property>
+                                                <property name="margin-bottom">5</property>
+                                                <property name="image-position">right</property>
+                                                <child>
+                                                  <object class="GtkImage">
+                                                    <property name="visible">True</property>
+                                                    <property name="can-focus">False</property>
+                                                    <property name="stock">gtk-refresh</property>
+                                                  </object>
+                                                </child>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkComboBoxText" id="PortsListComboTextBox">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="margin-start">5</property>
+                                                <property name="margin-end">5</property>
+                                                <property name="margin-top">5</property>
+                                                <property name="margin-bottom">5</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">2</property>
+                                              </packing>
+                                            </child>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
@@ -142,64 +193,94 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkButton" id="ResetSearchPortsButton">
+                                          <object class="GtkBox">
                                             <property name="visible">True</property>
-                                            <property name="can-focus">True</property>
-                                            <property name="receives-default">True</property>
-                                            <property name="margin-start">5</property>
-                                            <property name="margin-end">5</property>
-                                            <property name="margin-top">5</property>
-                                            <property name="margin-bottom">5</property>
-                                            <property name="image-position">right</property>
+                                            <property name="can-focus">False</property>
                                             <child>
-                                              <object class="GtkImage">
+                                              <object class="GtkLabel" id="BaudrateLabel">
                                                 <property name="visible">True</property>
                                                 <property name="can-focus">False</property>
-                                                <property name="stock">gtk-refresh</property>
+                                                <property name="margin-start">5</property>
+                                                <property name="margin-end">5</property>
+                                                <property name="margin-top">5</property>
+                                                <property name="margin-bottom">5</property>
+                                                <property name="label" translatable="yes">label</property>
                                               </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkComboBoxText" id="BaudratesListComboTextBox">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="margin-start">5</property>
+                                                <property name="margin-end">5</property>
+                                                <property name="margin-top">5</property>
+                                                <property name="margin-bottom">5</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">1</property>
+                                              </packing>
                                             </child>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
-                                            <property name="fill">False</property>
+                                            <property name="fill">True</property>
                                             <property name="position">1</property>
                                           </packing>
                                         </child>
-                                        <child>
-                                          <object class="GtkComboBoxText" id="PortsListComboTextBox">
-                                            <property name="visible">True</property>
-                                            <property name="can-focus">False</property>
-                                            <property name="margin-start">5</property>
-                                            <property name="margin-end">5</property>
-                                            <property name="margin-top">5</property>
-                                            <property name="margin-bottom">5</property>
-                                          </object>
-                                          <packing>
-                                            <property name="expand">False</property>
-                                            <property name="fill">False</property>
-                                            <property name="position">2</property>
-                                          </packing>
-                                        </child>
+                                      </object>
+                                    </child>
+                                    <child type="tab">
+                                      <object class="GtkLabel" id="ConnectionPortPage">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">page 1</property>
                                       </object>
                                       <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">0</property>
+                                        <property name="tab-fill">False</property>
                                       </packing>
                                     </child>
                                     <child>
                                       <object class="GtkBox">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
+                                        <property name="orientation">vertical</property>
                                         <child>
-                                          <object class="GtkLabel" id="BaudrateLabel">
+                                          <object class="GtkBox">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
-                                            <property name="margin-start">5</property>
-                                            <property name="margin-end">5</property>
-                                            <property name="margin-top">5</property>
-                                            <property name="margin-bottom">5</property>
-                                            <property name="label" translatable="yes">label</property>
+                                            <child>
+                                              <object class="GtkLabel" id="VidLabel">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="margin-top">5</property>
+                                                <property name="xpad">10</property>
+                                                <property name="label" translatable="yes">label</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkEntry" id="VidEntry">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="margin-top">5</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
@@ -208,13 +289,35 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkComboBoxText" id="BaudratesListComboTextBox">
+                                          <object class="GtkBox">
                                             <property name="visible">True</property>
                                             <property name="can-focus">False</property>
-                                            <property name="margin-start">5</property>
-                                            <property name="margin-end">5</property>
-                                            <property name="margin-top">5</property>
-                                            <property name="margin-bottom">5</property>
+                                            <child>
+                                              <object class="GtkLabel" id="PidLabel">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">False</property>
+                                                <property name="margin-top">5</property>
+                                                <property name="xpad">10</property>
+                                                <property name="label" translatable="yes">label</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <object class="GtkEntry" id="PidEntry">
+                                                <property name="visible">True</property>
+                                                <property name="can-focus">True</property>
+                                                <property name="margin-top">5</property>
+                                              </object>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">True</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
@@ -224,10 +327,25 @@
                                         </child>
                                       </object>
                                       <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
                                         <property name="position">1</property>
                                       </packing>
+                                    </child>
+                                    <child type="tab">
+                                      <object class="GtkLabel" id="ConnectionVidPidPage">
+                                        <property name="visible">True</property>
+                                        <property name="can-focus">False</property>
+                                        <property name="label" translatable="yes">page 2</property>
+                                      </object>
+                                      <packing>
+                                        <property name="position">1</property>
+                                        <property name="tab-fill">False</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child type="tab">
+                                      <placeholder/>
                                     </child>
                                   </object>
                                 </child>
@@ -279,7 +397,7 @@
                     <property name="can-focus">False</property>
                     <property name="left-padding">12</property>
                     <child>
-                      <object class="GtkComboBoxText" id="ProtocolTypeCoboBoxText">
+                      <object class="GtkComboBoxText" id="ProtocolTypeComboBoxText">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
                         <property name="halign">start</property>
@@ -764,6 +882,57 @@ STM32</property>
             <property name="padding">29</property>
             <property name="position">1</property>
           </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkFileChooserDialog" id="OpenFileDialog">
+    <property name="can-focus">False</property>
+    <property name="type-hint">dialog</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can-focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can-focus">False</property>
+            <property name="layout-style">end</property>
+            <child>
+              <object class="GtkButton" id="OpenButton">
+                <property name="label" translatable="yes">button</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="CencelButton">
+                <property name="label" translatable="yes">button</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
         </child>
       </object>
     </child>

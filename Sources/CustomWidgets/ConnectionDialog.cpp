@@ -12,7 +12,11 @@ namespace LocusBiaconWidgets {
 ConnectionDialog::ConnectionDialog(BaseObjectType* aCobject, const Glib::RefPtr<Gtk::Builder>& aBuilder) : 
     Glib::ObjectBase("ConnectionDialogLB"),
     Gtk::Dialog(aCobject),
-    refBuilder(aBuilder)
+    refBuilder(aBuilder),
+    currentPage(0),
+    idPid(0),
+    idVid(0),
+    is_connected(false)
 {
     set_title("Connection");
     
@@ -39,6 +43,22 @@ ConnectionDialog::ConnectionDialog(BaseObjectType* aCobject, const Glib::RefPtr<
     protocolLabel = Glib::RefPtr<Gtk::Label>::cast_dynamic(
         aBuilder->get_object("ProtocolLabel")
     );
+
+    vidLabel = Glib::RefPtr<Gtk::Label>::cast_dynamic(
+        aBuilder->get_object("VidLabel")
+    );
+
+    pidLabel = Glib::RefPtr<Gtk::Label>::cast_dynamic(
+        aBuilder->get_object("PidLabel")
+    );
+
+    connectionPortPage = Glib::RefPtr<Gtk::Label>::cast_dynamic(
+        aBuilder->get_object("ConnectionPortPage")
+    );
+
+    connectionVidPidPage = Glib::RefPtr<Gtk::Label>::cast_dynamic(
+        aBuilder->get_object("ConnectionVidPidPage")
+    );
     
     dialogConnectButton = Glib::RefPtr<Gtk::Button>::cast_dynamic(
         aBuilder->get_object("DialogConnectButton")
@@ -52,8 +72,8 @@ ConnectionDialog::ConnectionDialog(BaseObjectType* aCobject, const Glib::RefPtr<
         aBuilder->get_object("ResetSearchPortsButton")
     );
 
-    typeConnectionCoboBoxText = Glib::RefPtr<Gtk::ComboBoxText>::cast_dynamic(
-        aBuilder->get_object("TypeConnectionCoboBoxText")
+    typeConnectionComboBoxText = Glib::RefPtr<Gtk::ComboBoxText>::cast_dynamic(
+        aBuilder->get_object("TypeConnectionComboBoxText")
     );
 
     portsListComboTextBox = Glib::RefPtr<Gtk::ComboBoxText>::cast_dynamic(
@@ -64,8 +84,20 @@ ConnectionDialog::ConnectionDialog(BaseObjectType* aCobject, const Glib::RefPtr<
         aBuilder->get_object("BaudratesListComboTextBox")
     );
 
-    protocolTypeCoboBoxText = Glib::RefPtr<Gtk::ComboBoxText>::cast_dynamic(
-        aBuilder->get_object("ProtocolTypeCoboBoxText")
+    protocolTypeComboBoxText = Glib::RefPtr<Gtk::ComboBoxText>::cast_dynamic(
+        aBuilder->get_object("ProtocolTypeComboBoxText")
+    );
+
+    vidEntry = Glib::RefPtr<Gtk::Entry>::cast_dynamic(
+        aBuilder->get_object("VidEntry")
+    );
+
+    pidEntry = Glib::RefPtr<Gtk::Entry>::cast_dynamic(
+        aBuilder->get_object("PidEntry")
+    );
+    
+    serialNotebook = Glib::RefPtr<Gtk::Notebook>::cast_dynamic(
+        aBuilder->get_object("SerialNotebook")
     );
 
     definitionDefaultValues();
@@ -122,6 +154,22 @@ void ConnectionDialog::redefinitionLabeles()
     if (protocolLabel) {
         protocolLabel->set_label(kCurrentDialogItemText->at(DialogItmesText::PROTOCOL).c_str());
     }
+
+    if (vidLabel) {
+        vidLabel->set_label(kCurrentDialogItemText->at(DialogItmesText::VID_LABEL).c_str());
+    }
+
+    if (pidLabel) {
+        pidLabel->set_label(kCurrentDialogItemText->at(DialogItmesText::PID_LABEL).c_str());
+    }
+
+    if (connectionPortPage) {
+        connectionPortPage->set_label(kCurrentDialogItemText->at(DialogItmesText::PAGE_COM_LABEL).c_str());
+    }
+
+    if (connectionVidPidPage) {
+        connectionVidPidPage->set_label(kCurrentDialogItemText->at(DialogItmesText::PAGE_VID_PID_LABEL).c_str());
+    }
 }
 
 void ConnectionDialog::definitionDefaultValues()
@@ -129,18 +177,18 @@ void ConnectionDialog::definitionDefaultValues()
     redefinitionLabeles();
     resetUsbList(portsList);
 
-    if (typeConnectionCoboBoxText) {
+    if (typeConnectionComboBoxText) {
         std::string text = kDialogItemTextEn.at(DialogItmesText::CURRENT_TYPE_TCP).c_str();
-        typeConnectionCoboBoxText->append(text);
+        typeConnectionComboBoxText->append(text);
         text = kDialogItemTextEn.at(DialogItmesText::CURRENT_TYPE_SERIAL).c_str();
-        typeConnectionCoboBoxText->append(text);
-        typeConnectionCoboBoxText->set_active_text(text);
+        typeConnectionComboBoxText->append(text);
+        typeConnectionComboBoxText->set_active_text(text);
     }
 
-    if (protocolTypeCoboBoxText) {
+    if (protocolTypeComboBoxText) {
         std::string text = "Payload";
-        protocolTypeCoboBoxText->append(text);
-        protocolTypeCoboBoxText->set_active_text(text);
+        protocolTypeComboBoxText->append(text);
+        protocolTypeComboBoxText->set_active_text(text);
     }
 
     if (baudratesListComboTextBox) {
@@ -152,68 +200,176 @@ void ConnectionDialog::definitionDefaultValues()
     }
 
     if (dialogCloseButton) {
+        /**
+        * @brief Close dialog window
+        *
+        * @return None 
+        */
         dialogCloseButton->signal_clicked().connect([&]() {
             hide();
         });
     }
 
     if (dialogConnectButton) {
+        /**
+        * @brief Connect to USB device
+        *
+        * @return None 
+        */
         dialogConnectButton->signal_clicked().connect([&]() {
-            #ifdef __linux__
-            std::string portName;
-            if (portsList.size() > 0) {
-                portName = "/dev/" + portsListComboTextBox->get_active_text();
-            }
-            #endif
-            #ifdef __MINGW32__
-            std::string portName(portsList[0]);
-            #endif
-
-            if (systemSerial.openPort(portName) == SystemSerial::ErrorStatus::ERROR_OPEN) {
-                std::cout << "Port " << portName << " is not available!" << std::endl;
-                return;
-            }
-            std::cout << "Port " << portName << " is opened!" << std::endl;
+            this->connect();
         });
     }
 
     if (resetSearchPortsButton) {
+        /**
+        * @brief Reset USB list
+        *
+        * @return None 
+        */
         resetSearchPortsButton->signal_clicked().connect([&]() {
             this->resetUsbList(portsList);
         });
     }
 
+    if (serialNotebook) {
+        /**
+         * @brief Defines the USB connection method depending on the current window and connection status
+         *
+         * @param [aPage] Pointer of page widget
+         * @param [aPageNumber] Page representation as a number
+         * @return None
+         * 
+         * @note If "is_connected" == false, then you can switch a method
+         */
+        serialNotebook->signal_switch_page().connect([&](Gtk::Widget* aPage, guint aPageNumber) {
+            if (!is_connected) {
+                this->setPage(static_cast<int>(aPageNumber));
+            }
+        });
+    }
+
+    if (vidEntry) {
+        /**
+         * @brief Read data from "VID" field depending on the connection status
+         *
+         * @return None
+         * 
+         * @note If "is_connected" == false, then you can read data
+         */
+        vidEntry->signal_activate().connect([&]() {
+            if (!is_connected) {
+                std::string entryValue = vidEntry->get_chars(0, 5);
+                idVid = std::stoi(entryValue, 0, 16);
+            }
+        });
+    }
+
+    if (pidEntry) {
+        /**
+         * @brief Read data from "PID" field depending on the connection status
+         *
+         * @return None
+         * 
+         * @note If "is_connected" == false, then you can read data
+         */
+        pidEntry->signal_activate().connect([&]() {
+            if (!is_connected) {
+                std::string entryValue = pidEntry->get_chars(0, 5);
+                idPid = std::stoi(entryValue, 0, 16);
+            }
+        });
+    }
+
+    /**
+    * @brief Makes the parent window available for interaction when the dialog is closed
+    *
+    * @return None 
+    */
     this->signal_hide().connect([&]() {
         ownerWindow->set_sensitive(true);
     });
 }
 
+GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::connect()
+{
+    #ifdef __linux__
+    std::string portName;
+    struct stat sb;
+    uint16_t vid, pid;
+    
+    if (portsList.size() > 0) {
+        portName = "/dev/" + portsListComboTextBox->get_active_text();
+        stat(portName.c_str(), &sb);
+    }
+
+    if (currentPage == static_cast<int>(Pages::VID_PID_PAGE)) {
+        vid = idVid;
+        pid = idPid;
+
+        if (!usb.connectToDevice(vid, pid)) {
+            std::cout << "idVendor: (0x" << std::setw(4) << std::hex << vid 
+                << ") idProduct: (0x" << std::setw(4) << std::hex << pid 
+                << ") is not available!" << std::endl;
+            return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
+        }
+
+        std::cout << "idVendor: (0x" << std::setw(4) << std::hex << vid 
+            << ") idProduct: (0x" << std::setw(4) << std::hex << pid 
+            << ") is opened!" << std::endl;
+
+    } else if (currentPage == static_cast<int>(Pages::COM_PAGE)) {
+        if (systemSerial.openPort(portName) == SystemSerial::ErrorStatus::ERROR_OPEN) {
+            std::cout << "Port " << portName << " is not available!" << std::endl;
+            return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
+        }
+        std::cout << "Port " << portName << " is opened!" << std::endl;
+    }
+    #endif
+    #ifdef __MINGW32__
+    std::string portName(portsList[0]);
+    #endif
+
+    is_connected = true;
+    return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
+}
+
+GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::disconnect()
+{   
+    if (!usb.disconnectFromDevice()) {
+        return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
+    }
+
+    is_connected = false;
+    
+    return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
+} 
+
 void ConnectionDialog::resetUsbList(std::vector<std::string> &aPortList)
 {
     aPortList = systemSerial.getAvailablePorts();
-    if (portsListComboTextBox) { 
-        portsListComboTextBox->remove_all();
-        for (auto port : aPortList) {
+    if (portsListComboTextBox) {
+        portsListComboTextBox->remove_all(); 
+        if (aPortList.size()) {
+            for (auto port : aPortList) {
+                portsListComboTextBox->append(port);
+                portsListComboTextBox->set_active_text(port);
+            }
+        } else {
+            std::string port("None");
             portsListComboTextBox->append(port);
             portsListComboTextBox->set_active_text(port);
         }
     }
 }
 
-GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::dialogHandler()
+GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::dialogEnter()
 {
     libusb_device *devices = nullptr;
     
     if (!(devices = usb.getDeviceList())) {
-        return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
+        return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
     }
-
-    // // uint16_t vid = 0x4b4, pid = 0xf1;
-    // uint16_t vid = 0x1234, pid = 0x0005;
-    
-    // if (!usb.connectToDevice(vid, pid)) {
-    //     return GlobalHandlerEvents::HandlerEventsStatus::ERROR;
-    // }
 
     return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
 }

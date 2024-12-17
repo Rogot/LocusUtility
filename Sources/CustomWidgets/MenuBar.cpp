@@ -104,7 +104,7 @@ void MenuBar::definitionDefaultValues()
             GlobalHandlerEvents::HandlerEventsStatus status = globalEvents->executeHandler(
                 HandlersFuncKeys::CONNECT
             );
-            if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR) {
+            if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER) {
                 std::cout << "\nError with USB connection!\n";
             } else {
                 std::cout << "\nUSB connection success!\n";
@@ -122,7 +122,7 @@ void MenuBar::definitionDefaultValues()
             GlobalHandlerEvents::HandlerEventsStatus status = globalEvents->executeHandler(
                 HandlersFuncKeys::DISCONNECT
             );
-            if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR) {
+            if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER) {
                 std::cout << "\nError with USB disconnection!\n";
             } else {
                 std::cout << "\nUSB disconnection success!\n";
@@ -140,7 +140,7 @@ void MenuBar::definitionDefaultValues()
             GlobalHandlerEvents::HandlerEventsStatus status = globalEvents->executeHandler(
                 HandlersFuncKeys::QUIT_APP
             );
-            if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR) {
+            if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER) {
                 std::cout << "\nError with closing\n";
             }
 
@@ -157,7 +157,7 @@ void MenuBar::definitionDefaultValues()
             GlobalHandlerEvents::HandlerEventsStatus status = globalEvents->executeHandler(
                 HandlersFuncKeys::SWITCH_LANG
             );
-            if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR) {
+            if (status == GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER) {
                 std::cout << "\nError with changing language\n";
             }
         });

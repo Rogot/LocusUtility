@@ -13,7 +13,7 @@ SystemSerial::ErrorStatus SystemSerial::openPort(std::string& aPortName)
     hSerial = CreateFile(aPortName.c_str(), GENERIC_READ | GENERIC_WRITE,0,NULL,OPEN_EXISTING,0,NULL);
     if (hSerial == INVALID_HANDLE_VALUE) {
         printf("Error opening port %s\n", aPortName.c_str());
-        return SystemSerial::ErrorStatus::ERROR_OPEN
+        return SystemSerial::ErrorStatus::ERROR_OPEN;
     }
     #endif
 
@@ -22,6 +22,23 @@ SystemSerial::ErrorStatus SystemSerial::openPort(std::string& aPortName)
     if (fd < 0) {
         printf("Error opening port %s\n", aPortName.c_str());
         return SystemSerial::ErrorStatus::ERROR_OPEN;
+    }
+    #endif
+
+    return SystemSerial::ErrorStatus::SUCCESS;
+}
+
+SystemSerial::ErrorStatus SystemSerial::closePort(std::string& aPortName)
+{
+    #ifdef __MINGW32__
+    //Closing port
+    CloseHandle(hSerial);
+    #endif
+
+    #ifdef __linux__
+    int res = close(fd);
+    if (res > 0) {
+        return SystemSerial::ErrorStatus::ERROR_CLOSE;
     }
     #endif
 

@@ -34,7 +34,7 @@ GlobalHandlerEvents::HandlerEventsStatus GlobalHandlerEvents::executeHandler(Han
     #endif
     if (handlers.size()) {
         if (handlers.at(aKey)() != HandlerEventsStatus::HANDLE) {
-            return HandlerEventsStatus::ERROR;
+            return HandlerEventsStatus::ERROR_HANDLER;
         }
     }
 
