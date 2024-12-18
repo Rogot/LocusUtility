@@ -723,7 +723,7 @@ ESP32</property>
                                         <property name="primary-icon-sensitive">False</property>
                                       </object>
                                       <packing>
-                                        <property name="expand">False</property>
+                                        <property name="expand">True</property>
                                         <property name="fill">True</property>
                                         <property name="position">1</property>
                                       </packing>
@@ -736,6 +736,7 @@ ESP32</property>
                                         <property name="receives-default">True</property>
                                         <property name="valign">center</property>
                                         <property name="margin-start">15</property>
+                                        <property name="margin-end">5</property>
                                         <property name="vexpand">False</property>
                                       </object>
                                       <packing>
@@ -784,7 +785,7 @@ STM32</property>
                                         <property name="primary-icon-sensitive">False</property>
                                       </object>
                                       <packing>
-                                        <property name="expand">False</property>
+                                        <property name="expand">True</property>
                                         <property name="fill">True</property>
                                         <property name="position">1</property>
                                       </packing>
@@ -797,6 +798,7 @@ STM32</property>
                                         <property name="receives-default">True</property>
                                         <property name="valign">start</property>
                                         <property name="margin-start">15</property>
+                                        <property name="margin-end">5</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -899,30 +901,10 @@ STM32</property>
             <property name="can-focus">False</property>
             <property name="layout-style">end</property>
             <child>
-              <object class="GtkButton" id="OpenButton">
-                <property name="label" translatable="yes">button</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
+              <placeholder/>
             </child>
             <child>
-              <object class="GtkButton" id="CencelButton">
-                <property name="label" translatable="yes">button</property>
-                <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
+              <placeholder/>
             </child>
           </object>
           <packing>

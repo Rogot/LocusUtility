@@ -103,6 +103,13 @@ public:
 
     void stm32Active();
 
+    /**
+	 * @brief Set file path in area
+	 *
+	 * @return None
+	 */
+    void setFilePath(std::string& aFilePath, HandlersFuncKeys &aKey);
+
 protected:
     /**
 	 * @brief Set standard values for an object of the SelectFirmwareBox class

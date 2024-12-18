@@ -125,6 +125,7 @@ private:
     Glib::RefPtr<Gtk::Builder> refBuilder;
 
 private:
+	LocusBiaconWidgets::OpenFileDialog *openFileDialog;
 	LocusBiaconWidgets::ConnectionDialog *connectionDialog;
 	LocusBiaconWidgets::MenuBar *menuBar;                       ///<! Menu bar class
 	LocusBiaconWidgets::FirmwareMethodBox *fmBox;               ///<! Selection of downloadable firmware

@@ -28,6 +28,9 @@ MainWindow::~MainWindow()
     if (connectionDialog != nullptr) {
         delete connectionDialog;
     }
+    if (openFileDialog) {
+        delete openFileDialog;
+    }
 }
 
 MainWindow *MainWindow::getInstance(const char* aTitle, Glib::RefPtr<Gtk::Application> &aApp)
@@ -63,6 +66,7 @@ void MainWindow::initWidgets(Glib::RefPtr<Gtk::Builder> &aBuilder, Glib::RefPtr<
         aBuilder->get_widget_derived("MenuBar", menuBar);
         aBuilder->get_widget_derived("SelectFirmwareBox", selectFirmwareBox);
         aBuilder->get_widget_derived("ConnectionDialog", connectionDialog);
+        aBuilder->get_widget_derived("OpenFileDialog", openFileDialog);
 
         if (menuBar) {
             menuBar->setGlobalHandlerEvents(globalHandlers);
@@ -73,6 +77,13 @@ void MainWindow::initWidgets(Glib::RefPtr<Gtk::Builder> &aBuilder, Glib::RefPtr<
         if (selectFirmwareBox) {
             selectFirmwareBox->setGlobalHandlerEvents(globalHandlers);
             globalHandlers.executeHandler(HandlersFuncKeys::SELECT_STM32);
+        }
+        if (openFileDialog) {
+            openFileDialog->setOwner(this);
+            std::vector<std::string> types = { "Binar" ,"*.bin",
+                                                "Hex" ,"*.hex",
+                                                "All" ,"*.*"};
+            openFileDialog->init(types);
         }
     }
 }
@@ -123,6 +134,8 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::changeLanguage()
     if (menuBar) { menuBar->redefinitionLabeles(); }
     if (selectFirmwareBox) { selectFirmwareBox->redefinitionLabeles(); }
     if (connectionDialog) { connectionDialog->redefinitionLabeles(); }
+    if (openFileDialog) { openFileDialog->redefinitionLabeles(); }
+
     return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
 }
 
@@ -195,16 +208,20 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::searchFile(HandlersFuncKeys
     #if DEBUG
     std::cout << "Start searching file" << std::endl;
     #endif
-
-    LocusBiaconWidgets::OpenFileDialog *openFileDialog;
-    refBuilder->get_widget_derived("MenuBar", openFileDialog);
-    openFileDialog->setOwner(this);
-
-
-
-    if (openFileDialog) {
-        delete openFileDialog;
-    }
     
-    return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
+    if (openFileDialog->run() == Gtk::RESPONSE_OK) {
+        std::cout << "Open File Dialog is open!!!" << std::endl;
+    }
+
+    std::string path = openFileDialog->get_filename();
+    if (path.size() == 0) {
+        openFileDialog->hide();
+        return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
+    }
+
+    selectFirmwareBox->setFilePath(path, aKey);
+    
+    openFileDialog->hide();
+
+    return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
 }

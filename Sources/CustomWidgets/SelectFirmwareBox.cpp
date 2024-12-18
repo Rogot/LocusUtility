@@ -148,4 +148,13 @@ void SelectFirmwareBox::stm32Inactive()
     selectFirmwareStm32SearchEntry->set_sensitive(false);
 }
 
+void SelectFirmwareBox::setFilePath(std::string& aFilePath, HandlersFuncKeys &aKey)
+{
+    if (aKey == HandlersFuncKeys::SEARCH_FILE_ESP32) {
+        selectFirmwareEsp32SearchEntry->set_text(aFilePath);
+    } else if (aKey == HandlersFuncKeys::SEARCH_FILE_STM32) {
+        selectFirmwareStm32SearchEntry->set_text(aFilePath);
+    }
+}
+
 } // LocusBiaconWidgets

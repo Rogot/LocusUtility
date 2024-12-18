@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13)
 
-project(LocusBeaconUtiliy
+project(LocusBeaconUtility
     DESCRIPTION "A cross-platform dekstop application for Locus"
     LANGUAGES CXX C)
 
@@ -15,33 +15,44 @@ else()
 endif()
 # endif()
 
-# if(WIN32)
-# # Including DLL libraries for Windows
-#     set(DLL_PATH ./WindowsDLL/)
-
-#     add_library(dll_win SHARED IMPORTED)
-#     set_property(TARGET dll_win PROPERTY
-#             IMPORTED_LOCATION 
-#             ${DLL_PATH}/libatkmm-1.6.dll.a
-#             ${DLL_PATH}/libglib-2.0.dll.a
-#             ${DLL_PATH}/libgiomm-2.4.dll.a)
-#     set_property(TARGET dll_win PROPERTY
-#             IMPORTED_IMPLIB 
-#             ${DLL_PATH}/libatkmm-1.6.dll.a
-#             ${DLL_PATH}/libglib-2.0.dll.a
-#             ${DLL_PATH}/libgiomm-2.4.dll.a)
-# endif()
-
 if(WIN32)
-    set(PROJECT_BINARY_DIR "${PROJECT_SOURCE_DIR}/build_windows")
+    set(PROJECT_BINARY_DIR "${PROJECT_SOURCE_DIR}/build_win")
 elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(PROJECT_BINARY_DIR "${PROJECT_SOURCE_DIR}/build_linux")
 endif()
 
+if(WIN32)
+    # Including DLL libraries for Windows
+    link_directories("${CMAKE_CURRENT_SOURCE_DIR}/WindowsDLL")
+
+    set(DLL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/WindowsDLL/)
+
+    message(" <<< DLL path is: ${DLL_PATH}")
+
+    add_library(dll_win SHARED IMPORTED)
+    set_target_properties(dll_win PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib
+        LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib
+        RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin
+        IMPORTED_LOCATION 
+        ${DLL_PATH}/libatkmm-1.6-1.dll
+        ${DLL_PATH}/libglib-2.0-0.dll
+        ${DLL_PATH}/libgiomm-2.4-1.dll
+        ${DLL_PATH}/libgcc_s_seh-1.dll
+        # ${DLL_PATH}/api-ms-win-core-kernel32-legacy-l1-1-2.dll
+    )
+endif()
+
 message("NEW BINARY DIR: ${PROJECT_BINARY_DIR}")
 
-set(FLAGS_COMMON
+if (CMAKE_SYSTEM_NAME MATCHES "Linux")
+    set(FLAGS_COMMON
         "-pthread"
+    )
+endif()
+
+set(FLAGS_COMMON
+        # "-pthread"
         "-pedantic"
         "-Wall"
         "-Wcast-align"
@@ -98,9 +109,9 @@ add_executable(${CMAKE_PROJECT_NAME}
 
 target_link_libraries(${CMAKE_PROJECT_NAME} usb-1.0)
 
-# if (WIN32)
-# target_link_libraries(${CMAKE_PROJECT_NAME} dll_win)
-# endif()
+if (WIN32)
+    target_link_libraries(${CMAKE_PROJECT_NAME} dll_win)
+endif()
 
 if (GTKMM_FOUND)
     message(" >>>> Gtkmm was found! >>>>")

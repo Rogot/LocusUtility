@@ -188,7 +188,7 @@ private:
 private:
     std::vector<std::string> portsList;
     
-    uint16_t currentPage;
+    int currentPage;
     uint16_t idVid;
     uint16_t idPid;
     bool is_connected;

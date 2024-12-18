@@ -119,11 +119,11 @@ private:
 
         #ifdef __MINGW32__
         DWORD dwBytesWrite = 0; // the number of the writnig bytes
-        if(!ReadFile(hSerial, aDataRx.c_str(), 1, &dwBytesWrite, NULL)) {
-            printf("Read error\r\n");
-            CloseHandle(hSerial);
-            tranStatus.status = SystemSerial::ErrorStatus::ERROR_RECEIVE_DATA;
-        }
+        // if(!ReadFile(hSerial, aDataRx.c_str(), 1, &dwBytesWrite, NULL)) {
+        //     printf("Read error\r\n");
+        //     CloseHandle(hSerial);
+        //     tranStatus.status = SystemSerial::ErrorStatus::ERROR_RECEIVE_DATA;
+        // }
         tranStatus.bytesTransferd = dwBytesWrite;
         #endif
         #ifdef __linux__
