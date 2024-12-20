@@ -25,7 +25,7 @@ if(WIN32)
     # Including DLL libraries for Windows
     link_directories("${CMAKE_CURRENT_SOURCE_DIR}/WindowsDLL")
 
-    set(DLL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/WindowsDLL/)
+    set(DLL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Platforms/Windows)
 
     message(" <<< DLL path is: ${DLL_PATH}")
 
@@ -94,11 +94,11 @@ set(SOURCE_FILES
 # Add <Sources> subdir
 add_subdirectory(Sources)
 
-# Add <DroneDevice> subdir
-add_subdirectory(Sources/DroneDevice)
-
 # Add <Cusb> subdir
 add_subdirectory(Sources/Core/CUsb)
+
+# Add <DroneDevice> subdir
+add_subdirectory(Sources/DroneDevice)
 
 add_executable(${CMAKE_PROJECT_NAME} 
     ${SOURCE_FILES}
@@ -107,7 +107,7 @@ add_executable(${CMAKE_PROJECT_NAME}
     $<TARGET_OBJECTS:SystemSerialObj>
 )
 
-target_link_libraries(${CMAKE_PROJECT_NAME} usb-1.0)
+target_link_libraries(${CMAKE_PROJECT_NAME} usb-1.0 DroneDevice)
 
 if (WIN32)
     target_link_libraries(${CMAKE_PROJECT_NAME} dll_win)
