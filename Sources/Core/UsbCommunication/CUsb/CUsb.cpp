@@ -5,7 +5,7 @@
 //  Author: Maksim Sushkov
 //
 
-#include "Core/CUsb/CUsb.hpp"
+#include "Core/UsbCommunication/CUsb/CUsb.hpp"
 
 CUsb::CUsb() :
     devs_list(nullptr)
@@ -37,7 +37,7 @@ CUsb::~CUsb()
     libusb_exit(context);
 }
 
-bool CUsb::connectToDevice(uint16_t aVid, uint16_t aPid)
+bool CUsb::connectToDevice(int aVid, int aPid)
 {
 // #ifdef CY_VID_PID
 //     handleUsb = libusb_open_device_with_vid_pid(context, aVid, aPid);

@@ -21,33 +21,39 @@ elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(PROJECT_BINARY_DIR "${PROJECT_SOURCE_DIR}/build_linux")
 endif()
 
-if(WIN32)
-    # Including DLL libraries for Windows
-    link_directories("${CMAKE_CURRENT_SOURCE_DIR}/WindowsDLL")
+# if(WIN32)
+#     # Including DLL libraries for Windows
+#     link_directories("${CMAKE_CURRENT_SOURCE_DIR}/Platforms/Windows")
 
-    set(DLL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Platforms/Windows)
+#     set(DLL_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Platforms/Windows)
 
-    message(" <<< DLL path is: ${DLL_PATH}")
+#     message(" <<< DLL path is: ${DLL_PATH}")
 
-    add_library(dll_win SHARED IMPORTED)
-    set_target_properties(dll_win PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib
-        LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib
-        RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin
-        IMPORTED_LOCATION 
-        ${DLL_PATH}/libatkmm-1.6-1.dll
-        ${DLL_PATH}/libglib-2.0-0.dll
-        ${DLL_PATH}/libgiomm-2.4-1.dll
-        ${DLL_PATH}/libgcc_s_seh-1.dll
-        # ${DLL_PATH}/api-ms-win-core-kernel32-legacy-l1-1-2.dll
-    )
-endif()
+#     add_library(dll_win SHARED IMPORTED)
+#     set_target_properties(dll_win PROPERTIES
+#         ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib
+#         LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib
+#         RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin
+#         IMPORTED_LOCATION 
+#         ${DLL_PATH}/libatkmm-1.6-1.dll
+#         ${DLL_PATH}/libglib-2.0-0.dll
+#         ${DLL_PATH}/libgiomm-2.4-1.dll
+#         ${DLL_PATH}/libgcc_s_seh-1.dll
+#         # ${DLL_PATH}/api-ms-win-core-kernel32-legacy-l1-1-2.dll
+#     )
+# endif()
 
 message("NEW BINARY DIR: ${PROJECT_BINARY_DIR}")
 
 if (CMAKE_SYSTEM_NAME MATCHES "Linux")
     set(FLAGS_COMMON
         "-pthread"
+    )
+endif()
+
+if (WIN32)
+    set(FLAGS_COMMON
+        "-fpermissive"
     )
 endif()
 
@@ -62,6 +68,7 @@ set(FLAGS_COMMON
         "-Wshadow"
         "-Wold-style-cast"
         "-Woverloaded-virtual"
+        "-Wreorder"
 )
 
 string(REPLACE ";" " " FLAGS_COMMON "${FLAGS_COMMON}")
@@ -91,27 +98,24 @@ set(SOURCE_FILES
     Sources/MainWindow.cpp
 )
 
-# Add <Sources> subdir
-add_subdirectory(Sources)
-
-# Add <Cusb> subdir
-add_subdirectory(Sources/Core/CUsb)
-
-# Add <DroneDevice> subdir
-add_subdirectory(Sources/DroneDevice)
-
 add_executable(${CMAKE_PROJECT_NAME} 
     ${SOURCE_FILES}
     $<TARGET_OBJECTS:CustomWidgetsObj>
     $<TARGET_OBJECTS:GlobalHandlerEventsObj>
-    $<TARGET_OBJECTS:SystemSerialObj>
+    $<TARGET_OBJECTS:UsbCommunicationObj>
 )
 
-target_link_libraries(${CMAKE_PROJECT_NAME} usb-1.0 DroneDevice)
+# Add <Sources> subdir
+add_subdirectory(Sources)
 
-if (WIN32)
-    target_link_libraries(${CMAKE_PROJECT_NAME} dll_win)
-endif()
+# Add <DroneDevice> subdir
+add_subdirectory(Sources/DroneDevice)
+
+# target_link_libraries(${CMAKE_PROJECT_NAME} DroneDevice)
+
+# if (WIN32)
+#     target_link_libraries(${CMAKE_PROJECT_NAME} dll_win)
+# endif()
 
 if (GTKMM_FOUND)
     message(" >>>> Gtkmm was found! >>>>")

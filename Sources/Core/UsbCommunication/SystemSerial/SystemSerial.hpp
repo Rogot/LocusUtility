@@ -5,8 +5,8 @@
 //  Author: Maksim Sushkov
 //
 
-#ifndef SOURCES_CORE_SYSTEMSERIAL_SYSTEMSERIAL_HPP
-#define SOURCES_CORE_SYSTEMSERIAL_SYSTEMSERIAL_HPP
+#ifndef SOURCES_CORE_USBCOMMUNICATION_SYSTEMSERIAL_SYSTEMSERIAL_HPP
+#define SOURCES_CORE_USBCOMMUNICATION_SYSTEMSERIAL_SYSTEMSERIAL_HPP
 
 #ifdef __MINGW32__
 #include <windows.h>
@@ -40,7 +40,7 @@ public:
     };
 
 public:
-    SystemSerial() {}
+    SystemSerial() : fd(-1) {}
     virtual ~SystemSerial() {}
 
     /**
@@ -102,7 +102,7 @@ private:
         #endif
 
         #ifdef __linux__
-        int iOut = write(fd, &aDataTx, 1);
+        long int iOut = write(fd, &aDataTx, 1);
         if (iOut < 0) {
             printf("Write error\n");
             tranStatus.status = SystemSerial::ErrorStatus::ERROR_TRANSMIT_DATA;
@@ -119,15 +119,15 @@ private:
 
         #ifdef __MINGW32__
         DWORD dwBytesWrite = 0; // the number of the writnig bytes
-        // if(!ReadFile(hSerial, aDataRx.c_str(), 1, &dwBytesWrite, NULL)) {
-        //     printf("Read error\r\n");
-        //     CloseHandle(hSerial);
-        //     tranStatus.status = SystemSerial::ErrorStatus::ERROR_RECEIVE_DATA;
-        // }
+        if(!ReadFile(hSerial, aDataRx.c_str(), 1, &dwBytesWrite, NULL)) {
+            printf("Read error\r\n");
+            CloseHandle(hSerial);
+            tranStatus.status = SystemSerial::ErrorStatus::ERROR_RECEIVE_DATA;
+        }
         tranStatus.bytesTransferd = dwBytesWrite;
         #endif
         #ifdef __linux__
-        int iOut = read(fd, &aDataRx, 1);
+        long int iOut = read(fd, &aDataRx, 1);
         if (iOut < 0) {
             printf("Read error\n");
             tranStatus.status = SystemSerial::ErrorStatus::ERROR_RECEIVE_DATA;
@@ -135,13 +135,7 @@ private:
         tranStatus.bytesTransferd = iOut;
         #endif
 
-        //Closing port
-        #ifdef __MINGW32__ 
-        CloseHandle(hSerial);
-        #endif
-        #ifdef __linux
-        close(fd);
-        #endif
+        return tranStatus;
     }
 
 private:
@@ -153,4 +147,4 @@ private:
     #endif
 };
 
-#endif // SOURCES_CORE_SYSTEMSERIAL_SYSTEMSERIAL_HPP
+#endif // SOURCES_CORE_USBCOMMUNICATION_SYSTEMSERIAL_SYSTEMSERIAL_HPP

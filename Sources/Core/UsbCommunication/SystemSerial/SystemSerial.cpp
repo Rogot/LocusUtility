@@ -5,7 +5,7 @@
 //  Author: Maksim Sushkov
 //
 
-#include <Core/SystemSerial/SystemSerial.hpp>
+#include <Core/UsbCommunication/SystemSerial/SystemSerial.hpp>
 
 SystemSerial::ErrorStatus SystemSerial::openPort(std::string& aPortName)
 {
@@ -36,8 +36,14 @@ SystemSerial::ErrorStatus SystemSerial::closePort(std::string& aPortName)
     #endif
 
     #ifdef __linux__
-    int res = close(fd);
-    if (res > 0) {
+    if (fd != -1) {
+        int res = close(fd);
+        if (res > 0) {
+            return SystemSerial::ErrorStatus::ERROR_CLOSE;
+        }
+
+        fd = -1;
+    } else {
         return SystemSerial::ErrorStatus::ERROR_CLOSE;
     }
     #endif

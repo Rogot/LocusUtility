@@ -11,21 +11,21 @@ MainWindow::MainWindow(BaseObjectType *aCobject, const Glib::RefPtr<Gtk::Builder
     Gtk::ApplicationWindow(aCobject),
     refBuilder(aBuilder)
 {
-
+    // Load survey and clean up data
 }
 
 MainWindow::~MainWindow()
 {
-    if (fmBox != nullptr) {
+    if (fmBox) {
         delete fmBox;
     }
-    if (menuBar != nullptr) {
+    if (menuBar) {
         delete menuBar;
     }
-    if (selectFirmwareBox != nullptr) {
+    if (selectFirmwareBox) {
         delete selectFirmwareBox;
     }
-    if (connectionDialog != nullptr) {
+    if (connectionDialog) {
         delete connectionDialog;
     }
     if (openFileDialog) {
@@ -80,6 +80,8 @@ void MainWindow::initWidgets(Glib::RefPtr<Gtk::Builder> &aBuilder, Glib::RefPtr<
         }
         if (openFileDialog) {
             openFileDialog->setOwner(this);
+            
+            // Determining the types of files that will be shown during the search (name + type)
             std::vector<std::string> types = { "Binar" ,"*.bin",
                                                 "Hex" ,"*.hex",
                                                 "All" ,"*.*"};
@@ -136,7 +138,7 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::changeLanguage()
     if (connectionDialog) { connectionDialog->redefinitionLabeles(); }
     if (openFileDialog) { openFileDialog->redefinitionLabeles(); }
 
-    return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
+    return GlobalHandlerEvents::HandlerEventsStatus::HANDLED;
 }
 
 GlobalHandlerEvents::HandlerEventsStatus MainWindow::quitApp()
@@ -145,7 +147,7 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::quitApp()
     std::cout << "QuitApp" << std::endl;
     #endif
     if (perentApp) { perentApp->quit(); }
-    return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
+    return GlobalHandlerEvents::HandlerEventsStatus::HANDLED;
 }
 
 GlobalHandlerEvents::HandlerEventsStatus MainWindow::connect()
@@ -183,7 +185,7 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::selectEsp32()
     if (selectFirmwareBox) {
         selectFirmwareBox->stm32Inactive();
         selectFirmwareBox->esp32Active();
-        return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
+        return GlobalHandlerEvents::HandlerEventsStatus::HANDLED;
     }
 
     return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
@@ -197,7 +199,7 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::selectStm32()
     if (selectFirmwareBox) {
         selectFirmwareBox->esp32Inactive();
         selectFirmwareBox->stm32Active();
-        return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
+        return GlobalHandlerEvents::HandlerEventsStatus::HANDLED;
     }
 
     return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
@@ -210,7 +212,9 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::searchFile(HandlersFuncKeys
     #endif
     
     if (openFileDialog->run() == Gtk::RESPONSE_OK) {
+        #if DEBUG
         std::cout << "Open File Dialog is open!!!" << std::endl;
+        #endif
     }
 
     std::string path = openFileDialog->get_filename();
@@ -223,5 +227,5 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::searchFile(HandlersFuncKeys
     
     openFileDialog->hide();
 
-    return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
+    return GlobalHandlerEvents::HandlerEventsStatus::HANDLED;
 }

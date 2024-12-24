@@ -16,9 +16,9 @@
 #include "CustomWidgets/ConnectionDialog.hpp"
 #include "CustomWidgets/FirmwareMethodBox.hpp"
 #include "CustomWidgets/MenuBar.hpp"
-#include "Core/CUsb/CUsb.hpp"
-#include "CustomWidgets/SelectFirmwareBox.hpp"
 #include "CustomWidgets/OpenFileDialog.hpp"
+#include "CustomWidgets/SelectFirmwareBox.hpp"
+#include "Core/UsbCommunication/CUsb/CUsb.hpp"
 #include "Core/GlobalHandlerEvents/GlobalHandlerEvents.hpp"
 
 #define DEBUG       false
@@ -125,8 +125,8 @@ private:
     Glib::RefPtr<Gtk::Builder> refBuilder;
 
 private:
-	LocusBiaconWidgets::OpenFileDialog *openFileDialog;
-	LocusBiaconWidgets::ConnectionDialog *connectionDialog;
+	LocusBiaconWidgets::OpenFileDialog *openFileDialog;			///<! Find file for upload
+	LocusBiaconWidgets::ConnectionDialog *connectionDialog;		///<! Dialog for USB connection
 	LocusBiaconWidgets::MenuBar *menuBar;                       ///<! Menu bar class
 	LocusBiaconWidgets::FirmwareMethodBox *fmBox;               ///<! Selection of downloadable firmware
 	LocusBiaconWidgets::SelectFirmwareBox *selectFirmwareBox;   ///<! Firmware control

@@ -5,15 +5,15 @@
 //  Author: Maksim Sushkov
 //
 
-#ifndef SOURCES_CORE_CUSB_CUSB_HPP_
-#define SOURCES_CORE_CUSB_CUSB_HPP_
+#ifndef SOURCES_CORE_USBCOMMUNICATION_CUSB_CUSB_HPP_
+#define SOURCES_CORE_USBCOMMUNICATION_CUSB_CUSB_HPP_
 
 #include <cstring>
 #include <iostream>
 #include <iomanip>
 #include <thread>
 
-#include <Core/CUsb/libusb/libusb/libusb.h>
+#include <Core/UsbCommunication/CUsb/libusb/libusb/libusb.h>
 
 #define CUSB_DEBUG_LIBUSB      false
 #define CUSB_DEBUG             false
@@ -31,7 +31,7 @@ public:
      * @param [aPid] - Product ID of the USB device
 	 * @return Connecting status: true is "OK", false is "Error"
 	 */
-    virtual bool connectToDevice(uint16_t aVid, uint16_t aPid);
+    virtual bool connectToDevice(int aVid, int aPid);
     
     /**
 	 * @brief Disconnecting to the device
@@ -63,4 +63,4 @@ protected:
     libusb_context *context = NULL;
 };
 
-#endif // SOURCES_CORE_CUSB_CUSB_HPP_
+#endif // SOURCES_CORE_USBCOMMUNICATION_CUSB_CUSB_HPP_

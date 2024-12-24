@@ -1,7 +1,7 @@
 //
 // InternalDevice.hpp
 //
-//  Created on: Oct 20, 2017 
+//  Created on: Oct 20, 2017
 //      Author: Alexander
 //
 

@@ -24,9 +24,8 @@
 #include <gtkmm-3.0/gtkmm/notebook.h>
 #include <gtkmm-3.0/gtkmm/window.h>
 
-#include "Core/CUsb/CUsb.hpp"
 #include "Core/GlobalHandlerEvents/GlobalHandlerEvents.hpp"
-#include "Core/SystemSerial/SystemSerial.hpp"
+#include "Core/UsbCommunication/UsbCommunication.hpp"
 
 namespace LocusBiaconWidgets {
 
@@ -135,9 +134,22 @@ public:
 	 *
 	 * @return None
 	 */
+
     void redefinitionLabeles();
 
+    /**
+	 * @brief Disconnect from COM-port or USB port
+	 *
+	 * @return if success, than HANDLED, other - ERROR_HANDLER
+	 */
+
     GlobalHandlerEvents::HandlerEventsStatus disconnect();
+
+    /**
+	 * @brief Connect to COM-port or USB port
+	 *
+	 * @return if success, than HANDLED, other - ERROR_HANDLER
+	 */
 
     GlobalHandlerEvents::HandlerEventsStatus connect();
 protected:
@@ -148,7 +160,21 @@ protected:
 	 */
     void definitionDefaultValues();
 
+    /**
+	 * @brief Refresh enabled COM ports list 
+	 *
+     * @param [aPortList] array of ports
+	 * @return None
+	 */
+
     void resetUsbList(std::vector<std::string> &aPortList);
+
+    /**
+	 * @brief Set current notebook page
+	 *
+     * @param [aPageNum] current notebook page
+	 * @return None
+	 */
 
     void setPage(int aPageNum) { currentPage = aPageNum; }
 
@@ -182,15 +208,14 @@ private:
 
 private:
     Gtk::Window *ownerWindow;
-    CUsb usb;
-    SystemSerial systemSerial;
+    UsbCommunication usbCommunication;
 
 private:
     std::vector<std::string> portsList;
     
     int currentPage;
-    uint16_t idVid;
-    uint16_t idPid;
+    int idVid;
+    int idPid;
     bool is_connected;
 };
 

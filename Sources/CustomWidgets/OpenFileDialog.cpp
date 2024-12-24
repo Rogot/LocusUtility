@@ -14,6 +14,7 @@ OpenFileDialog::OpenFileDialog(BaseObjectType* aCobject, const Glib::RefPtr<Gtk:
     Gtk::FileChooserDialog(aCobject),
     openButton(nullptr),
     cencelButton(nullptr),
+    kOpenFileDialogText(nullptr),
     refBuilder(aBuilder)
 {
     definitionDefaultValues();
@@ -32,8 +33,8 @@ OpenFileDialog::~OpenFileDialog()
 void OpenFileDialog::definitionDefaultValues()
 {
     redefinitionLabeles();
-    add_button(kOpenFileDialogTextRu.at(OpenFileDialogText::OPEN).c_str(), Gtk::RESPONSE_OK);
-    add_button(kOpenFileDialogTextRu.at(OpenFileDialogText::CANCEL).c_str(), Gtk::RESPONSE_CANCEL);
+    openButton = add_button(kOpenFileDialogText->at(OpenFileDialogText::OPEN).c_str(), Gtk::RESPONSE_OK);
+    cencelButton = add_button(kOpenFileDialogText->at(OpenFileDialogText::CANCEL).c_str(), Gtk::RESPONSE_CANCEL);
     set_current_folder(Glib::ustring::compose("%1/Desktop", Glib::ustring(getenv("HOME"))));
     set_transient_for(*this);
 }

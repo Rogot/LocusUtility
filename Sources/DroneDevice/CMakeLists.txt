@@ -34,7 +34,7 @@ add_subdirectory(Libs)
 add_library(${PROJECT_NAME} $<TARGET_OBJECTS:libcanard_sources>)
 target_compile_options(${PROJECT_NAME} PUBLIC SHELL:${PUBLIC_FLAGS})
 target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_SOURCE_DIR}/Libs")
-target_include_directories(${PROJECT_NAME} INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include/>)
+target_include_directories(${PROJECT_NAME} INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>)
 
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Nuttx")
     install(TARGETS ${PROJECT_NAME})

@@ -296,7 +296,6 @@ GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::connect()
     #ifdef __linux__
     std::string portName;
     struct stat sb;
-    uint16_t vid, pid;
     
     if (portsList.size() > 0) {
         portName = "/dev/" + portsListComboTextBox->get_active_text();
@@ -304,26 +303,18 @@ GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::connect()
     }
 
     if (currentPage == static_cast<int>(Pages::VID_PID_PAGE)) {
-        vid = idVid;
-        pid = idPid;
+        usbCommunication.setVid(idVid);
+        usbCommunication.setPid(idPid);
 
-        if (!usb.connectToDevice(vid, pid)) {
-            std::cout << "idVendor: (0x" << std::setw(4) << std::hex << vid 
-                << ") idProduct: (0x" << std::setw(4) << std::hex << pid 
-                << ") is not available!" << std::endl;
+        if (usbCommunication.connect(UsbCommunication::ConnectionMethod::USB) != UsbCommunication::UsbResult::SUCCESS) {
             return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
         }
-
-        std::cout << "idVendor: (0x" << std::setw(4) << std::hex << vid 
-            << ") idProduct: (0x" << std::setw(4) << std::hex << pid 
-            << ") is opened!" << std::endl;
-
     } else if (currentPage == static_cast<int>(Pages::COM_PAGE)) {
-        if (systemSerial.openPort(portName) == SystemSerial::ErrorStatus::ERROR_OPEN) {
-            std::cout << "Port " << portName << " is not available!" << std::endl;
+        usbCommunication.setPortName(portName);
+
+        if (usbCommunication.connect(UsbCommunication::ConnectionMethod::COM) != UsbCommunication::UsbResult::SUCCESS) {
             return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
         }
-        std::cout << "Port " << portName << " is opened!" << std::endl;
     }
     #endif
     #ifdef __MINGW32__
@@ -331,23 +322,24 @@ GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::connect()
     #endif
 
     is_connected = true;
-    return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
+    return GlobalHandlerEvents::HandlerEventsStatus::HANDLED;
 }
 
 GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::disconnect()
 {   
-    if (!usb.disconnectFromDevice()) {
+    if (usbCommunication.disconnect() != UsbCommunication::UsbResult::SUCCESS) {
         return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
     }
 
     is_connected = false;
     
-    return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
+    return GlobalHandlerEvents::HandlerEventsStatus::HANDLED;
 } 
 
 void ConnectionDialog::resetUsbList(std::vector<std::string> &aPortList)
 {
-    aPortList = systemSerial.getAvailablePorts();
+    usbCommunication.toDetermineDevices(UsbCommunication::ConnectionMethod::COM);
+    aPortList = usbCommunication.getPortList();
     if (portsListComboTextBox) {
         portsListComboTextBox->remove_all(); 
         if (aPortList.size()) {
@@ -365,13 +357,13 @@ void ConnectionDialog::resetUsbList(std::vector<std::string> &aPortList)
 
 GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::dialogEnter()
 {
-    libusb_device *devices = nullptr;
+    usbCommunication.toDetermineDevices(UsbCommunication::ConnectionMethod::USB);
     
-    if (!(devices = usb.getDeviceList())) {
+    if (!(usbCommunication.getUsbList())) {
         return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
     }
 
-    return GlobalHandlerEvents::HandlerEventsStatus::HANDLE;
+    return GlobalHandlerEvents::HandlerEventsStatus::HANDLED;
 }
 
 void ConnectionDialog::setOwner(Gtk::Window *aOwner)

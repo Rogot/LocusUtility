@@ -33,10 +33,10 @@ GlobalHandlerEvents::HandlerEventsStatus GlobalHandlerEvents::executeHandler(Han
     std::cout << "Execute handler " << aKey << std::endl;
     #endif
     if (handlers.size()) {
-        if (handlers.at(aKey)() != HandlerEventsStatus::HANDLE) {
+        if (handlers.at(aKey)() != HandlerEventsStatus::HANDLED) {
             return HandlerEventsStatus::ERROR_HANDLER;
         }
     }
 
-    return HandlerEventsStatus::HANDLE;
+    return HandlerEventsStatus::HANDLED;
 }
