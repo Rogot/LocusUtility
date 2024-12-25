@@ -124,8 +124,6 @@ public:
     ConnectionDialog(BaseObjectType *aCobject, const Glib::RefPtr<Gtk::Builder> &aRefBuilder);
 
     virtual ~ConnectionDialog();
-
-    GlobalHandlerEvents::HandlerEventsStatus dialogEnter();
     
     void setOwner(Gtk::Window *aOwner);
 

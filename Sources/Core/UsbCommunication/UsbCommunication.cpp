@@ -13,7 +13,7 @@ UsbCommunication::UsbCommunication() :
     portName(""),
     devices(nullptr)
 {
-    initPayloadProtocol(*this);
+    // initPayloadProtocol(*this);
 }
 
 UsbCommunication::~UsbCommunication()

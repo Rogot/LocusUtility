@@ -296,43 +296,45 @@ GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::connect()
     #ifdef __linux__
     std::string portName;
     struct stat sb;
-    
-    if (portsList.size() > 0) {
-        portName = "/dev/" + portsListComboTextBox->get_active_text();
-        stat(portName.c_str(), &sb);
-    }
-
-    if (currentPage == static_cast<int>(Pages::VID_PID_PAGE)) {
-        usbCommunication.setVid(idVid);
-        usbCommunication.setPid(idPid);
-
-        if (usbCommunication.connect(UsbCommunication::ConnectionMethod::USB) != UsbCommunication::UsbResult::SUCCESS) {
-            return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
+    if (!is_connected) {
+        if (portsList.size() > 0) {
+            portName = "/dev/" + portsListComboTextBox->get_active_text();
+            stat(portName.c_str(), &sb);
         }
-    } else if (currentPage == static_cast<int>(Pages::COM_PAGE)) {
-        usbCommunication.setPortName(portName);
 
-        if (usbCommunication.connect(UsbCommunication::ConnectionMethod::COM) != UsbCommunication::UsbResult::SUCCESS) {
-            return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
+        if (currentPage == static_cast<int>(Pages::VID_PID_PAGE)) {
+            usbCommunication.setVid(idVid);
+            usbCommunication.setPid(idPid);
+
+            if (usbCommunication.connect(UsbCommunication::ConnectionMethod::USB) != UsbCommunication::UsbResult::SUCCESS) {
+                return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
+            }
+        } else if (currentPage == static_cast<int>(Pages::COM_PAGE)) {
+            usbCommunication.setPortName(portName);
+
+            if (usbCommunication.connect(UsbCommunication::ConnectionMethod::COM) != UsbCommunication::UsbResult::SUCCESS) {
+                return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
+            }
         }
-    }
-    #endif
-    #ifdef __MINGW32__
-    std::string portName(portsList[0]);
-    #endif
+        #endif
+        #ifdef __MINGW32__
+        std::string portName(portsList[0]);
+        #endif
 
-    is_connected = true;
+        is_connected = true;
+    }
     return GlobalHandlerEvents::HandlerEventsStatus::HANDLED;
 }
 
 GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::disconnect()
 {   
-    if (usbCommunication.disconnect() != UsbCommunication::UsbResult::SUCCESS) {
-        return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
-    }
+    if (is_connected) {
+        if (usbCommunication.disconnect() != UsbCommunication::UsbResult::SUCCESS) {
+            return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
+        }
 
-    is_connected = false;
-    
+        is_connected = false;
+    }
     return GlobalHandlerEvents::HandlerEventsStatus::HANDLED;
 } 
 
@@ -353,17 +355,6 @@ void ConnectionDialog::resetUsbList(std::vector<std::string> &aPortList)
             portsListComboTextBox->set_active_text(port);
         }
     }
-}
-
-GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::dialogEnter()
-{
-    usbCommunication.toDetermineDevices(UsbCommunication::ConnectionMethod::USB);
-    
-    if (!(usbCommunication.getUsbList())) {
-        return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
-    }
-
-    return GlobalHandlerEvents::HandlerEventsStatus::HANDLED;
 }
 
 void ConnectionDialog::setOwner(Gtk::Window *aOwner)

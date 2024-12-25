@@ -13,7 +13,7 @@
 
 // #include "DroneDevice/PayloadProtocol/SerialHandler.hpp"
 
-#define DEBUG       false
+#define DEBUG       true
 
 class UsbCommunication {
 private:
@@ -103,7 +103,7 @@ public:
     void setPortName(std::string& aPortName) { portName = aPortName; }
     std::vector<std::string> getPortList() { return portList; }
     
-private:
+protected:
     /**
     * @brief Functions for write data using USB (libusb)
     *

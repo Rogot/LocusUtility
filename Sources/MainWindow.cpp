@@ -160,7 +160,7 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::connect()
         connectionDialog->setOwner(this);
         set_sensitive(false);
 
-        return connectionDialog->dialogEnter();
+        return GlobalHandlerEvents::HandlerEventsStatus::HANDLED;
     }
 
     return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
