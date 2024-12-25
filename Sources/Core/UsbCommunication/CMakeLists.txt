@@ -12,6 +12,6 @@ add_library(UsbCommunicationObj OBJECT ${SOURCE_LIST_USBCOMMUNICATION})
 target_include_directories(UsbCommunicationObj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(UsbCommunicationObj PUBLIC usb-1.0 DroneDevice)
 
-
-target_link_directories(${CMAKE_PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+# target_link_directories(${CMAKE_PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(${CMAKE_PROJECT_NAME} UsbCommunicationObj)

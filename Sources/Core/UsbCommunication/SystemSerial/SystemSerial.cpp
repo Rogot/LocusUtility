@@ -51,12 +51,12 @@ SystemSerial::ErrorStatus SystemSerial::closePort(std::string& aPortName)
     return SystemSerial::ErrorStatus::SUCCESS;
 }
 
-SystemSerial::TransferStatus SystemSerial::writeData(std::string& aDataTx, size_t aLength)
+SystemSerial::TransferStatus SystemSerial::writeData(uint8_t *aDataTx, size_t aLength)
 {
     return writeDataImpl(aDataTx, aLength);
 }
 
-SystemSerial::TransferStatus SystemSerial::readData(std::string& aDataRx, size_t aLength)
+SystemSerial::TransferStatus SystemSerial::readData(uint8_t *aDataRx, size_t aLength)
 {
     return readDataImpl(aDataRx, aLength);
 }

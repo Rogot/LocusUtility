@@ -98,7 +98,7 @@ set(SOURCE_FILES
     Sources/MainWindow.cpp
 )
 
-add_executable(${CMAKE_PROJECT_NAME} 
+add_executable(${CMAKE_PROJECT_NAME}
     ${SOURCE_FILES}
     $<TARGET_OBJECTS:CustomWidgetsObj>
     $<TARGET_OBJECTS:GlobalHandlerEventsObj>
@@ -110,7 +110,6 @@ add_subdirectory(Sources)
 
 # Add <DroneDevice> subdir
 add_subdirectory(Sources/DroneDevice)
-
 # target_link_libraries(${CMAKE_PROJECT_NAME} DroneDevice)
 
 # if (WIN32)

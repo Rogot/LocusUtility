@@ -75,7 +75,7 @@ public:
      * @param [aLength] - data length for transmitting
 	 * @return ErrorStatus is SUCCESS if ok, other - there is a error
 	 */
-    TransferStatus writeData(std::string& aDataTx, size_t aLength);
+    TransferStatus writeData(uint8_t *aDataTx, size_t aLength);
     
     /**
 	 * @brief Read data from serial port
@@ -84,10 +84,10 @@ public:
      * @param [aLength] - data length
 	 * @return ErrorStatus is SUCCESS if ok, other - there is a error
 	 */
-    TransferStatus readData(std::string& aDataRx, size_t aLength);
+    TransferStatus readData(uint8_t *aDataRx, size_t aLength);
 
 private:
-    TransferStatus writeDataImpl(std::string& aDataTx, size_t aLength)
+    TransferStatus writeDataImpl(uint8_t *aDataTx, size_t aLength)
     {
         TransferStatus tranStatus = {SystemSerial::ErrorStatus::SUCCESS, 0};
 
@@ -113,7 +113,7 @@ private:
         return tranStatus;
     }
 
-    TransferStatus readDataImpl(std::string& aDataRx, size_t aLength)
+    TransferStatus readDataImpl(uint8_t *aDataRx, size_t aLength)
     {
         TransferStatus tranStatus = {SystemSerial::ErrorStatus::SUCCESS, 0};
 

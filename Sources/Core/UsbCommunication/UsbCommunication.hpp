@@ -13,10 +13,12 @@
 
 // #include "DroneDevice/PayloadProtocol/SerialHandler.hpp"
 
+#define DEBUG       false
+
 class UsbCommunication {
 private:
     static constexpr size_t kMaxPacketLength{256};
-    static constexpr uint8_t address{1};
+    // static constexpr uint8_t address{1};
 public:
     enum class ConnectionMethod {
         NONE,
@@ -29,12 +31,14 @@ public:
         CONNECTION_ERROR,
         DISCONNECTION_ERROR,
         GET_DEVICE_LIST_ERROR,
+        METHOD_NOT_CHOOSE_ERROR,
     };
 
-    enum class TransferStatus {
+    enum class TransferErrorStatus {
         SUCCESS,
         TRANSMIT_ERROR,
         RECEIVE_ERROR,
+        METHOD_NOT_CHOOSE_ERROR,
     };
 
 public:
@@ -59,21 +63,36 @@ public:
 
     UsbResult disconnect();
 
+    /**
+    * @brief Find included devices
+    *
+    * @param [aMethod] Connection method (USB/COM)
+    * @return if OK - UsbResult::SUCCES, other any *_ERROR
+    */
+
     UsbResult toDetermineDevices(ConnectionMethod aMethod); 
 
-    TransferStatus write(uint8_t *aBuffer, size_t aLength);
+    /**
+    * @brief Common functions for write data using USB
+    *
+    * @param [aBuffer] Buffer for storage data
+    * @param [aLength] Buffer length
+    * @return if OK - UsbResult::SUCCES, other any *_ERROR
+    */
     
-    TransferStatus read(uint8_t *aBuffer, size_t aLength);
-
-    TransferStatus writeDataUsbImpl(uint8_t *aBuffer, size_t aLength);
-
-    TransferStatus writeDataComImpl(uint8_t *aBuffer, size_t aLength);
-
-    TransferStatus readDataUsbImpl(uint8_t *aBuffer, size_t aLength);
+    TransferErrorStatus write(uint8_t *aBuffer, size_t aLength);
     
-    TransferStatus readDataComImpl(uint8_t *aBuffer, size_t aLength);
+    /**
+    * @brief Common functions for read data using USB
+    *
+    * @param [aBuffer] Buffer for storage data
+    * @param [aLength] Buffer length
+    * @return if OK - UsbResult::SUCCES, other any *_ERROR
+    */
 
-    void initPayloadProtocol();
+    TransferErrorStatus read(uint8_t *aBuffer, size_t aLength);
+
+    static void initPayloadProtocol(UsbCommunication& aUsb);
 
     /* USB connection functions */
     void setVid(int aVid) { vid = aVid; }
@@ -84,6 +103,47 @@ public:
     void setPortName(std::string& aPortName) { portName = aPortName; }
     std::vector<std::string> getPortList() { return portList; }
     
+private:
+    /**
+    * @brief Functions for write data using USB (libusb)
+    *
+    * @param [aBuffer] Buffer for storage data
+    * @param [aLength] Buffer length
+    * @return if OK - UsbResult::SUCCES, other any *_ERROR
+    */
+
+    TransferErrorStatus writeDataUsbImpl(uint8_t *aBuffer, size_t aLength);
+
+    /**
+    * @brief Functions for write data using COM port
+    *
+    * @param [aBuffer] Buffer for storage data
+    * @param [aLength] Buffer length
+    * @return if OK - UsbResult::SUCCES, other any *_ERROR
+    */
+
+    TransferErrorStatus writeDataComImpl(uint8_t *aBuffer, size_t aLength);
+
+    /**
+    * @brief Functions for read data using USB (libusb)
+    *
+    * @param [aBuffer] Buffer for storage data
+    * @param [aLength] Buffer length
+    * @return if OK - UsbResult::SUCCES, other any *_ERROR
+    */
+
+    TransferErrorStatus readDataUsbImpl(uint8_t *aBuffer, size_t aLength);
+    
+    /**
+    * @brief Functions for read data using COM port
+    *
+    * @param [aBuffer] Buffer for storage data
+    * @param [aLength] Buffer length
+    * @return if OK - UsbResult::SUCCES, other any *_ERROR
+    */
+
+    TransferErrorStatus readDataComImpl(uint8_t *aBuffer, size_t aLength);
+
 private:
     ConnectionMethod method;
     CUsb usb;
