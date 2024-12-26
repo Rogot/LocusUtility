@@ -7,7 +7,7 @@
 
 #include <Core/UsbCommunication/SystemSerial/SystemSerial.hpp>
 
-SystemSerial::ErrorStatus SystemSerial::openPort(std::string& aPortName)
+UsbTypes::TransferErrorStatus SystemSerial::openPort(std::string& aPortName)
 {
     #ifdef __MINGW32__
     hSerial = CreateFile(aPortName.c_str(), GENERIC_READ | GENERIC_WRITE,0,NULL,OPEN_EXISTING,0,NULL);
@@ -21,14 +21,14 @@ SystemSerial::ErrorStatus SystemSerial::openPort(std::string& aPortName)
     fd = open(aPortName.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
     if (fd < 0) {
         printf("Error opening port %s\n", aPortName.c_str());
-        return SystemSerial::ErrorStatus::ERROR_OPEN;
+        return UsbTypes::TransferErrorStatus::ERROR_OPEN;
     }
     #endif
 
-    return SystemSerial::ErrorStatus::SUCCESS;
+    return UsbTypes::TransferErrorStatus::SUCCESS;
 }
 
-SystemSerial::ErrorStatus SystemSerial::closePort(std::string& aPortName)
+UsbTypes::TransferErrorStatus SystemSerial::closePort(std::string& aPortName)
 {
     #ifdef __MINGW32__
     //Closing port
@@ -39,24 +39,24 @@ SystemSerial::ErrorStatus SystemSerial::closePort(std::string& aPortName)
     if (fd != -1) {
         int res = close(fd);
         if (res > 0) {
-            return SystemSerial::ErrorStatus::ERROR_CLOSE;
+            return UsbTypes::TransferErrorStatus::ERROR_CLOSE;
         }
 
         fd = -1;
     } else {
-        return SystemSerial::ErrorStatus::ERROR_CLOSE;
+        return UsbTypes::TransferErrorStatus::ERROR_CLOSE;
     }
     #endif
 
-    return SystemSerial::ErrorStatus::SUCCESS;
+    return UsbTypes::TransferErrorStatus::SUCCESS;
 }
 
-SystemSerial::TransferStatus SystemSerial::writeData(uint8_t *aDataTx, size_t aLength)
+UsbTypes::TransferStatus SystemSerial::writeData(uint8_t *aDataTx, size_t aLength)
 {
     return writeDataImpl(aDataTx, aLength);
 }
 
-SystemSerial::TransferStatus SystemSerial::readData(uint8_t *aDataRx, size_t aLength)
+UsbTypes::TransferStatus SystemSerial::readData(uint8_t *aDataRx, size_t aLength)
 {
     return readDataImpl(aDataRx, aLength);
 }

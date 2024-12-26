@@ -5,8 +5,8 @@
 //  Author: Maksim Sushkov
 //
 
-#ifndef SOURCES_CORE_USBCOMMUNICATION_SYSTEMSERIAL_SYSTEMSERIAL_HPP
-#define SOURCES_CORE_USBCOMMUNICATION_SYSTEMSERIAL_SYSTEMSERIAL_HPP
+#ifndef SOURCES_CORE_USBCOMMUNICATION_SYSTEMSERIAL_SYSTEMSERIAL_HPP_
+#define SOURCES_CORE_USBCOMMUNICATION_SYSTEMSERIAL_SYSTEMSERIAL_HPP_
 
 #ifdef __MINGW32__
 #include <windows.h>
@@ -24,21 +24,9 @@
 #include <string>
 #include <vector>
 
+#include "Core/UsbCommunication/UsbTypes.hpp"
+
 class SystemSerial {
-public:
-    enum class ErrorStatus {
-        SUCCESS,                ///> All good
-        ERROR_OPEN,             ///> Error open port
-        ERROR_CLOSE,            ///> Error cloese port
-        ERROR_TRANSMIT_DATA,    ///> Error during transmitting data
-        ERROR_RECEIVE_DATA      ///> Error during receiving data
-    };
-
-    struct TransferStatus {
-        ErrorStatus status;
-        size_t bytesTransferd;
-    };
-
 public:
     SystemSerial() : fd(-1) {}
     virtual ~SystemSerial() {}
@@ -58,7 +46,7 @@ public:
      * 
      * @note Using port name + path to the file (in Linux)
 	 */
-    ErrorStatus openPort(std::string& aPortName);
+    UsbTypes::TransferErrorStatus openPort(std::string& aPortName);
     
     /**
 	 * @brief Try close serial port (ttyACM* or ttyUSB*)
@@ -66,7 +54,7 @@ public:
      * @param [aPortName] - port name
 	 * @return ErrorStatus is SUCCESS if ok, other - there is a error
 	 */
-    ErrorStatus closePort(std::string& aPortName);
+    UsbTypes::TransferErrorStatus closePort(std::string& aPortName);
     
     /**
 	 * @brief Write data using serial port
@@ -75,7 +63,7 @@ public:
      * @param [aLength] - data length for transmitting
 	 * @return ErrorStatus is SUCCESS if ok, other - there is a error
 	 */
-    TransferStatus writeData(uint8_t *aDataTx, size_t aLength);
+    UsbTypes::TransferStatus writeData(uint8_t *aDataTx, size_t aLength);
     
     /**
 	 * @brief Read data from serial port
@@ -84,12 +72,12 @@ public:
      * @param [aLength] - data length
 	 * @return ErrorStatus is SUCCESS if ok, other - there is a error
 	 */
-    TransferStatus readData(uint8_t *aDataRx, size_t aLength);
+    UsbTypes::TransferStatus readData(uint8_t *aDataRx, size_t aLength);
 
 private:
-    TransferStatus writeDataImpl(uint8_t *aDataTx, size_t aLength)
+    UsbTypes::TransferStatus writeDataImpl(uint8_t *aDataTx, size_t aLength)
     {
-        TransferStatus tranStatus = {SystemSerial::ErrorStatus::SUCCESS, 0};
+        UsbTypes::TransferStatus tranStatus = {UsbTypes::TransferErrorStatus::SUCCESS, 0};
 
         #ifdef __MINGW32__ 
         DWORD dwBytesWrite = 0; // the number of the writnig bytes
@@ -98,24 +86,24 @@ private:
             printf("Write error\r\n");
             tranStatus.status = SystemSerial::ErrorStatus::ERROR_TRANSMIT_DATA;
         }
-        tranStatus.bytesTransferd = dwBytesWrite;
+        tranStatus.bytesTransfered = dwBytesWrite;
         #endif
 
         #ifdef __linux__
         long int iOut = write(fd, &aDataTx, 1);
         if (iOut < 0) {
             printf("Write error\n");
-            tranStatus.status = SystemSerial::ErrorStatus::ERROR_TRANSMIT_DATA;
+            tranStatus.status = UsbTypes::TransferErrorStatus::ERROR_TRANSMIT_DATA;
         }
-        tranStatus.bytesTransferd = iOut;
+        tranStatus.bytesTransfered = iOut;
         #endif
 
         return tranStatus;
     }
 
-    TransferStatus readDataImpl(uint8_t *aDataRx, size_t aLength)
+    UsbTypes::TransferStatus readDataImpl(uint8_t *aDataRx, size_t aLength)
     {
-        TransferStatus tranStatus = {SystemSerial::ErrorStatus::SUCCESS, 0};
+        UsbTypes::TransferStatus tranStatus = {UsbTypes::TransferErrorStatus::SUCCESS, 0};
 
         #ifdef __MINGW32__
         DWORD dwBytesWrite = 0; // the number of the writnig bytes
@@ -124,15 +112,15 @@ private:
             CloseHandle(hSerial);
             tranStatus.status = SystemSerial::ErrorStatus::ERROR_RECEIVE_DATA;
         }
-        tranStatus.bytesTransferd = dwBytesWrite;
+        tranStatus.bytesTransfered = dwBytesWrite;
         #endif
         #ifdef __linux__
         long int iOut = read(fd, &aDataRx, 1);
         if (iOut < 0) {
             printf("Read error\n");
-            tranStatus.status = SystemSerial::ErrorStatus::ERROR_RECEIVE_DATA;
+            tranStatus.status = UsbTypes::TransferErrorStatus::ERROR_RECEIVE_DATA;
         }
-        tranStatus.bytesTransferd = iOut;
+        tranStatus.bytesTransfered = iOut;
         #endif
 
         return tranStatus;
@@ -147,4 +135,4 @@ private:
     #endif
 };
 
-#endif // SOURCES_CORE_USBCOMMUNICATION_SYSTEMSERIAL_SYSTEMSERIAL_HPP
+#endif // SOURCES_CORE_USBCOMMUNICATION_SYSTEMSERIAL_SYSTEMSERIAL_HPP_

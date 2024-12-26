@@ -8,8 +8,9 @@
 #ifndef SOURCES_CORE_USBCOMMUNICATION_USBCOMMUNICATION_HPP_
 #define SOURCES_CORE_USBCOMMUNICATION_USBCOMMUNICATION_HPP_
 
-#include "CUsb/CUsb.hpp"
-#include "SystemSerial/SystemSerial.hpp"
+#include "Core/UsbCommunication/CUsb/CUsb.hpp"
+#include "Core/UsbCommunication/SystemSerial/SystemSerial.hpp"
+#include "Core/UsbCommunication/SerialListener.hpp"
 
 // #include "DroneDevice/PayloadProtocol/SerialHandler.hpp"
 
@@ -21,24 +22,17 @@ private:
     // static constexpr uint8_t address{1};
 public:
     enum class ConnectionMethod {
-        NONE,
-        USB,
-        COM,
+        NONE,       ///> Connection method did't choose
+        USB,        ///> Connection method is libusb
+        COM,        ///> Connection method is COM port
     };
 
     enum class UsbResult {
-        SUCCESS,
-        CONNECTION_ERROR,
-        DISCONNECTION_ERROR,
-        GET_DEVICE_LIST_ERROR,
-        METHOD_NOT_CHOOSE_ERROR,
-    };
-
-    enum class TransferErrorStatus {
-        SUCCESS,
-        TRANSMIT_ERROR,
-        RECEIVE_ERROR,
-        METHOD_NOT_CHOOSE_ERROR,
+        SUCCESS,                    ///> Success interaction
+        CONNECTION_ERROR,           ///> Error during trying connect
+        DISCONNECTION_ERROR,        ///> Error during trying disconnect
+        GET_DEVICE_LIST_ERROR,      ///> Error during trying get device list
+        METHOD_NOT_CHOOSE_ERROR,    ///> Error connection method didn't choose
     };
 
 public:
@@ -80,7 +74,7 @@ public:
     * @return if OK - UsbResult::SUCCES, other any *_ERROR
     */
     
-    TransferErrorStatus write(uint8_t *aBuffer, size_t aLength);
+    UsbTypes::TransferErrorStatus write(uint8_t *aBuffer, size_t aLength);
     
     /**
     * @brief Common functions for read data using USB
@@ -90,7 +84,9 @@ public:
     * @return if OK - UsbResult::SUCCES, other any *_ERROR
     */
 
-    TransferErrorStatus read(uint8_t *aBuffer, size_t aLength);
+    UsbTypes::TransferErrorStatus read(uint8_t *aBuffer, size_t aLength);
+
+    bool waitForReadyRead(size_t aMs);
 
     static void initPayloadProtocol(UsbCommunication& aUsb);
 
@@ -112,7 +108,7 @@ protected:
     * @return if OK - UsbResult::SUCCES, other any *_ERROR
     */
 
-    TransferErrorStatus writeDataUsbImpl(uint8_t *aBuffer, size_t aLength);
+    UsbTypes::TransferErrorStatus writeDataUsbImpl(uint8_t *aBuffer, size_t aLength);
 
     /**
     * @brief Functions for write data using COM port
@@ -122,7 +118,7 @@ protected:
     * @return if OK - UsbResult::SUCCES, other any *_ERROR
     */
 
-    TransferErrorStatus writeDataComImpl(uint8_t *aBuffer, size_t aLength);
+    UsbTypes::TransferErrorStatus writeDataComImpl(uint8_t *aBuffer, size_t aLength);
 
     /**
     * @brief Functions for read data using USB (libusb)
@@ -132,7 +128,7 @@ protected:
     * @return if OK - UsbResult::SUCCES, other any *_ERROR
     */
 
-    TransferErrorStatus readDataUsbImpl(uint8_t *aBuffer, size_t aLength);
+    UsbTypes::TransferErrorStatus readDataUsbImpl(uint8_t *aBuffer, size_t aLength);
     
     /**
     * @brief Functions for read data using COM port
@@ -142,7 +138,7 @@ protected:
     * @return if OK - UsbResult::SUCCES, other any *_ERROR
     */
 
-    TransferErrorStatus readDataComImpl(uint8_t *aBuffer, size_t aLength);
+    UsbTypes::TransferErrorStatus readDataComImpl(uint8_t *aBuffer, size_t aLength);
 
 private:
     ConnectionMethod method;
