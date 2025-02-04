@@ -4,7 +4,7 @@
 //  Created on: Dec 20, 2024
 //  Author: Maksim Sushkov
 //
-
+#pragma once
 #ifndef SOURCES_CORE_USBCOMMUNICATION_USBCOMMUNICATION_HPP_
 #define SOURCES_CORE_USBCOMMUNICATION_USBCOMMUNICATION_HPP_
 
@@ -12,12 +12,10 @@
 #include "Core/UsbCommunication/SystemSerial/SystemSerial.hpp"
 #include "Core/UsbCommunication/SerialListener.hpp"
 
-#include "DroneDevice/DeviceObserver.hpp"
-
-// #include <DroneDevice/Include/DroneDevice/PayloadProtocol/SerialHandler.hpp>
-// #include "Include/DroneDevice/AbstractDevice.hpp"
-// #include "DroneDevice/PayloadProtocol/SerialHandler.hpp"
+// #include <DroneDevice/Include/DroneDevice/DeviceObserver.hpp>
 // #include "DroneDevice/DeviceObserver.hpp"
+// #include <DroneDevice/DeviceObserver.hpp>
+
 
 #define DEBUG       true
 

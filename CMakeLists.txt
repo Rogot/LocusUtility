@@ -102,9 +102,6 @@ set(SOURCE_FILES
     Sources/MainWindow.cpp
 )
 
-# Add <DroneDevice> subdir
-# add_subdirectory(Sources/DroneDevice)
-
 # Add <Sources> subdir
 add_subdirectory(Sources)
 
@@ -115,8 +112,7 @@ add_executable(${CMAKE_PROJECT_NAME}
     # $<TARGET_OBJECTS:UsbCommunication>
 )
 
-# target_link_libraries(${PROJECT_NAME} PRIVATE UsbCommunication)
-target_link_libraries(${PROJECT_NAME} PUBLIC UsbCommunication)
+target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC UsbCommunication DroneDevice)
 
 # if (WIN32)
 #     target_link_libraries(${CMAKE_PROJECT_NAME} dll_win)

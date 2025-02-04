@@ -8,13 +8,13 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}" ${CMAKE_MODULE_PATH})
 set(INCLUDE_CUSB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/CUsb")
 
 set(INCLUDE_DRONEDEVICE_DIR "${CMAKE_SOURCE_DIR}/Sources/DroneDevice/Include")
-# set(INCLUDE_DRONEDEVICE_DIR "${CMAKE_SOURCE_DIR}/Sources/DroneDevice/Include")
+
+# set(INCLUDE_DRONEDEVICE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../DroneDevice/Include")
+
 message("DRONEDEVICE PATH: ${INCLUDE_DRONEDEVICE_DIR}")
 
 # Add <Cusb> subdir
 add_subdirectory(CUsb)
-
-# add_subdirectory(${CMAKE_SOURCE_DIR}/Sources/DroneDevice DroneDevice_build)
 
 # Make library <UsbCommunication>
 set(SOURCE_LIST_USBCOMMUNICATION
@@ -24,7 +24,7 @@ set(SOURCE_LIST_USBCOMMUNICATION
 )
 
 list(APPEND EXTRA_INCLUDES
-    "${CMAKE_CURRENT_SOURCE_DIR}/SystemSerial/SystemSerial.hpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/SystemSerial"
 )
 
 message("${SOURCE_LIST_USBCOMMUNICATION} - SOURCE LIST (+ UsbCommunication)")
@@ -35,13 +35,6 @@ add_library(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME} PUBLIC DroneDevice)
-target_link_libraries(${PROJECT_NAME} PRIVATE usb-1.0)
-
-target_include_directories(${PROJECT_NAME} 
-    PRIVATE
-        ${INCLUDE_CUSB_DIR}
-        ${EXTRA_INCLUDES}
-)
 
 target_include_directories(${PROJECT_NAME} 
     PUBLIC
@@ -49,11 +42,12 @@ target_include_directories(${PROJECT_NAME}
         ${INCLUDE_DRONEDEVICE_DIR}
 )
 
-# target_include_directories(${PROJECT_NAME} 
-#     PUBLIC
-#         $<INSTALL_INTERFACE:Include>
-#         $<BUILD_INTERFACE:${INCLUDE_DRONEDEVICE_DIR}/Include>
-# )
+target_include_directories(${PROJECT_NAME} 
+    PRIVATE
+        ${INCLUDE_CUSB_DIR}
+        ${EXTRA_INCLUDES}
+        # ${INCLUDE_DRONEDEVICE_DIR}
+)
 
-
+target_link_libraries(${PROJECT_NAME} PRIVATE usb-1.0)
 # target_link_libraries(${CMAKE_PROJECT_NAME} UsbCommunicationObj)
