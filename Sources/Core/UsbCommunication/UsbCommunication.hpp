@@ -12,7 +12,12 @@
 #include "Core/UsbCommunication/SystemSerial/SystemSerial.hpp"
 #include "Core/UsbCommunication/SerialListener.hpp"
 
+#include "DroneDevice/DeviceObserver.hpp"
+
+// #include <DroneDevice/Include/DroneDevice/PayloadProtocol/SerialHandler.hpp>
+// #include "Include/DroneDevice/AbstractDevice.hpp"
 // #include "DroneDevice/PayloadProtocol/SerialHandler.hpp"
+// #include "DroneDevice/DeviceObserver.hpp"
 
 #define DEBUG       true
 
@@ -20,6 +25,7 @@ class UsbCommunication {
 private:
     static constexpr size_t kMaxPacketLength{256};
     // static constexpr uint8_t address{1};
+
 public:
     enum class ConnectionMethod {
         NONE,       ///> Connection method did't choose
@@ -84,7 +90,7 @@ public:
     * @return if OK - UsbResult::SUCCES, other any *_ERROR
     */
 
-    UsbTypes::TransferErrorStatus read(uint8_t *aBuffer, size_t aLength);
+    UsbTypes::TransferStatus read(uint8_t *aBuffer, size_t aLength);
 
     bool waitForReadyRead(size_t aMs);
 
@@ -128,7 +134,7 @@ protected:
     * @return if OK - UsbResult::SUCCES, other any *_ERROR
     */
 
-    UsbTypes::TransferErrorStatus readDataUsbImpl(uint8_t *aBuffer, size_t aLength);
+    UsbTypes::TransferStatus readDataUsbImpl(uint8_t *aBuffer, size_t aLength);
     
     /**
     * @brief Functions for read data using COM port
@@ -138,7 +144,7 @@ protected:
     * @return if OK - UsbResult::SUCCES, other any *_ERROR
     */
 
-    UsbTypes::TransferErrorStatus readDataComImpl(uint8_t *aBuffer, size_t aLength);
+    UsbTypes::TransferStatus readDataComImpl(uint8_t *aBuffer, size_t aLength);
 
 private:
     ConnectionMethod method;

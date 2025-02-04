@@ -11,7 +11,9 @@
 #include <thread>
 #include <mutex>
 
-// #include <UsbCommunication/UsbCommunication.hpp>
+#include <Core/UsbCommunication/UsbTypes.hpp>
+
+#define DTBUG       true
 
 namespace PayloadProtocol {
 
@@ -25,11 +27,12 @@ public:
         serial(aSerial),
         handler(aHandler),
         mutex(),
+        is_active(false),
         thread([&]() {
             run();
         })
     {
-        thread.join();
+
     }
 
     virtual ~SerialListener()
@@ -38,17 +41,34 @@ public:
     }
 
 private:
+
+    void start()
+    {
+        is_active = true;
+        #if DTBUG
+        std::cout << "Listener is active" << std::endl;
+        #endif
+        thread.join();
+    }
+
+    void stop()
+    {
+        is_active = false;
+    }
+
     void run()
     {
-        size_t bytesRead = 0;
+        UsbTypes::TransferStatus transferStatus = {UsbTypes::TransferErrorStatus::SUCCESS, 0};
+        #if DTBUG
         std::cout << "SerialListener run() is ON" << std::endl;
-        while(true) {
+        #endif
+        while(is_active) {
             std::lock_guard<std::mutex> lock(mutex);
             if (serial.waitForReadyRead(1)) {
-				// bytesRead = serial.read(serialBufferOutside, sizeof(serialBufferOutside));
+				transferStatus = serial.read(serialBufferOutside, sizeof(serialBufferOutside));
 
-				if (bytesRead) {
-					handler.update(static_cast<void *>(serialBufferOutside), bytesRead);
+				if (transferStatus.bytesTransfered) {
+					handler.update(static_cast<void *>(serialBufferOutside), transferStatus.bytesTransfered);
 				}
 			}
         }
@@ -56,6 +76,7 @@ private:
 
 private:
 	uint8_t serialBufferOutside[kBufferLength];
+    bool is_active;
 
     std::mutex mutex;
     std::thread thread;

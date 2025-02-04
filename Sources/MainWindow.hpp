@@ -18,7 +18,6 @@
 #include "CustomWidgets/MenuBar.hpp"
 #include "CustomWidgets/OpenFileDialog.hpp"
 #include "CustomWidgets/SelectFirmwareBox.hpp"
-#include "Core/UsbCommunication/CUsb/CUsb.hpp"
 #include "Core/GlobalHandlerEvents/GlobalHandlerEvents.hpp"
 
 #define DEBUG       false

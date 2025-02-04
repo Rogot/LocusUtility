@@ -13,6 +13,7 @@
 #include <iomanip>
 #include <thread>
 
+// #include <libusb-1.0/libusb.h>
 #include <Core/UsbCommunication/CUsb/libusb/libusb/libusb.h>
 
 #define CUSB_DEBUG_LIBUSB      false
@@ -31,14 +32,14 @@ public:
      * @param [aPid] - Product ID of the USB device
 	 * @return Connecting status: true is "OK", false is "Error"
 	 */
-    virtual bool connectToDevice(int aVid, int aPid);
+    bool connectToDevice(int aVid, int aPid);
     
     /**
 	 * @brief Disconnecting to the device
 	 * 
 	 * @return Disconnecting status: true is "OK", false is "Error"
 	 */
-    virtual bool disconnectFromDevice();
+    bool disconnectFromDevice();
 
     /**
 	 * @brief Print USB information in consol

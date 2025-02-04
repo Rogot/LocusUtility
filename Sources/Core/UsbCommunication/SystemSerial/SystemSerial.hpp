@@ -32,14 +32,14 @@ public:
     virtual ~SystemSerial() {}
 
     /**
-	 * @brief Get list of available USB ports (ttyACM* or ttyUSB*)
+	 * @brief Get list of available USB ports (ttyACM* or ttyUSB* for Linux)
 	 * 
 	 * @return List of ports
 	 */
     std::vector<std::string> getAvailablePorts();
 
     /**
-	 * @brief Try open serial port (ttyACM* or ttyUSB*)
+	 * @brief Try open serial port (ttyACM* or ttyUSB* for Linux)
 	 * 
      * @param [aPortName] - port name
 	 * @return ErrorStatus is SUCCESS if ok, other - there is a error
@@ -49,7 +49,7 @@ public:
     UsbTypes::TransferErrorStatus openPort(std::string& aPortName);
     
     /**
-	 * @brief Try close serial port (ttyACM* or ttyUSB*)
+	 * @brief Try close serial port (ttyACM* or ttyUSB* for Linux)
 	 * 
      * @param [aPortName] - port name
 	 * @return ErrorStatus is SUCCESS if ok, other - there is a error

@@ -24,7 +24,14 @@ namespace UsbTypes {
     struct TransferStatus {
         TransferErrorStatus status;
         size_t bytesTransfered;
+
+        TransferStatus operator=(const TransferStatus& rhs)
+        {
+            return TransferStatus{rhs.status, rhs.bytesTransfered};
+        }
     };
+
+    
 
 } // UsbTypes
 

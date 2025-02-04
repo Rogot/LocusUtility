@@ -218,6 +218,7 @@ void ConnectionDialog::definitionDefaultValues()
         */
         dialogConnectButton->signal_clicked().connect([&]() {
             this->connect();
+            hide();
         });
     }
 

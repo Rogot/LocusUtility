@@ -1,10 +1,17 @@
-#include "UsbCommunication.hpp"
+//
+// UsbCommunication.cpp
+//
+//  Created on: Dec 20, 2024
+//  Author: Maksim Sushkov
+//
 
 #include "DroneDevice/PayloadProtocol/SerialHandler.hpp"
 #include "DroneDevice/StaticDeviceHub.hpp"
 #include "DroneDevice/InternalDevice/InternalDevice.hpp"
 #include "DroneDevice/InternalDevice/FieldList.hpp"
 #include "DroneDevice/InternalDevice/VolatileField.hpp"
+
+#include "UsbCommunication.hpp"
 
 UsbCommunication::UsbCommunication() : 
     method(ConnectionMethod::NONE),
@@ -176,15 +183,15 @@ UsbTypes::TransferErrorStatus UsbCommunication::write(uint8_t *aBuffer, size_t a
     return status;
 }
 
-UsbTypes::TransferErrorStatus UsbCommunication::read(uint8_t *aBuffer, size_t aLength)
+UsbTypes::TransferStatus UsbCommunication::read(uint8_t *aBuffer, size_t aLength)
 {
-    UsbTypes::TransferErrorStatus status = UsbTypes::TransferErrorStatus::ERROR_METHOD_NOT_CHOOSE;
+    UsbTypes::TransferStatus status = {UsbTypes::TransferErrorStatus::ERROR_METHOD_NOT_CHOOSE, 0};
     switch (method)
     {
     case ConnectionMethod::USB:
         status = readDataUsbImpl(aBuffer, aLength);
         #if DEBUG
-        if (status > UsbTypes::TransferErrorStatus::SUCCESS) {
+        if (status.status > UsbTypes::TransferErrorStatus::SUCCESS) {
             std::cout << "Receive Error USB" << std::endl;
         }
         #endif
@@ -193,7 +200,7 @@ UsbTypes::TransferErrorStatus UsbCommunication::read(uint8_t *aBuffer, size_t aL
     case ConnectionMethod::COM:
         status = readDataComImpl(aBuffer, aLength);
         #if DEBUG
-        if (status > UsbTypes::TransferErrorStatus::SUCCESS) {
+        if (status.status > UsbTypes::TransferErrorStatus::SUCCESS) {
             std::cout << "Receive Error COM" << std::endl;
         }
         #endif
@@ -226,21 +233,22 @@ UsbTypes::TransferErrorStatus UsbCommunication::writeDataComImpl(uint8_t *aBuffe
     return UsbTypes::TransferErrorStatus::SUCCESS;
 }
 
-UsbTypes::TransferErrorStatus UsbCommunication::readDataUsbImpl(uint8_t *aBuffer, size_t aLength)
+UsbTypes::TransferStatus UsbCommunication::readDataUsbImpl(uint8_t *aBuffer, size_t aLength)
 {
 
 }
 
-UsbTypes::TransferErrorStatus UsbCommunication::readDataComImpl(uint8_t *aBuffer, size_t aLength)
+UsbTypes::TransferStatus UsbCommunication::readDataComImpl(uint8_t *aBuffer, size_t aLength)
 {
-    UsbTypes::TransferStatus errorStatus = {UsbTypes::TransferErrorStatus::SUCCESS, 0};
-    errorStatus = serial.readData(aBuffer, aLength);
+    UsbTypes::TransferStatus transferStatus = {UsbTypes::TransferErrorStatus::SUCCESS, 0};
+    transferStatus = serial.readData(aBuffer, aLength);
 
-    if (errorStatus.status > UsbTypes::TransferErrorStatus::SUCCESS || !errorStatus.bytesTransfered) {
-        return UsbTypes::TransferErrorStatus::ERROR_RECEIVE_DATA;
+    if (transferStatus.status > UsbTypes::TransferErrorStatus::SUCCESS || !transferStatus.bytesTransfered) {
+        transferStatus.status = UsbTypes::TransferErrorStatus::ERROR_RECEIVE_DATA;
+        return transferStatus;
     }
 
-    return UsbTypes::TransferErrorStatus::SUCCESS;
+    return transferStatus;
 }
 
 bool UsbCommunication::waitForReadyRead(size_t aMs)

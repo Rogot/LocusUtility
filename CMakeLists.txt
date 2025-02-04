@@ -4,6 +4,8 @@ project(LocusBeaconUtility
     DESCRIPTION "A cross-platform dekstop application for Locus"
     LANGUAGES CXX C)
 
+    set(CMAKE_VERBOSE_MAKEFILE ON)
+
 # if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 include(FindPkgConfig)
 if(PKG_CONFIG_FOUND)
@@ -16,8 +18,10 @@ endif()
 # endif()
 
 if(WIN32)
+    message(STATUS "Building for Windows")
     set(PROJECT_BINARY_DIR "${PROJECT_SOURCE_DIR}/build_win")
 elseif(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    message(STATUS "Building for Linux")
     set(PROJECT_BINARY_DIR "${PROJECT_SOURCE_DIR}/build_linux")
 endif()
 
@@ -98,19 +102,21 @@ set(SOURCE_FILES
     Sources/MainWindow.cpp
 )
 
-add_executable(${CMAKE_PROJECT_NAME}
-    ${SOURCE_FILES}
-    $<TARGET_OBJECTS:CustomWidgetsObj>
-    $<TARGET_OBJECTS:GlobalHandlerEventsObj>
-    $<TARGET_OBJECTS:UsbCommunicationObj>
-)
+# Add <DroneDevice> subdir
+# add_subdirectory(Sources/DroneDevice)
 
 # Add <Sources> subdir
 add_subdirectory(Sources)
 
-# Add <DroneDevice> subdir
-add_subdirectory(Sources/DroneDevice)
-# target_link_libraries(${CMAKE_PROJECT_NAME} DroneDevice)
+add_executable(${CMAKE_PROJECT_NAME}
+    ${SOURCE_FILES}
+    $<TARGET_OBJECTS:CustomWidgetsObj>
+    $<TARGET_OBJECTS:GlobalHandlerEventsObj>
+    # $<TARGET_OBJECTS:UsbCommunication>
+)
+
+# target_link_libraries(${PROJECT_NAME} PRIVATE UsbCommunication)
+target_link_libraries(${PROJECT_NAME} PUBLIC UsbCommunication)
 
 # if (WIN32)
 #     target_link_libraries(${CMAKE_PROJECT_NAME} dll_win)
@@ -118,7 +124,7 @@ add_subdirectory(Sources/DroneDevice)
 
 if (GTKMM_FOUND)
     message(" >>>> Gtkmm was found! >>>>")
-    target_link_libraries(${CMAKE_PROJECT_NAME} ${GTKMM_LIBRARIES})
+    target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC  ${GTKMM_LIBRARIES})
     target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC ${GTKMM_INCLUDE_DIRS})
     target_compile_options(${CMAKE_PROJECT_NAME} PUBLIC ${GTKMM_CFLAGS_OTHER})
 else()
