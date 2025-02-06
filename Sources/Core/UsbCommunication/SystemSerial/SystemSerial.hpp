@@ -123,6 +123,15 @@ private:
         tranStatus.bytesTransfered = iOut;
         #endif
 
+        //Closing port
+        #ifdef __MINGW32__ 
+        CloseHandle(hSerial);
+        #endif
+        #ifdef __linux
+        close(fd);
+        #endif
+
+
         return tranStatus;
     }
 

@@ -11,7 +11,7 @@ set(INCLUDE_DRONEDEVICE_DIR "${CMAKE_SOURCE_DIR}/Sources/DroneDevice/Include")
 
 # set(INCLUDE_DRONEDEVICE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../DroneDevice/Include")
 
-message("DRONEDEVICE PATH: ${INCLUDE_DRONEDEVICE_DIR}")
+message(STATUS "DroneDevice include path: ${INCLUDE_DRONEDEVICE_DIR}/Include")
 
 # Add <Cusb> subdir
 add_subdirectory(CUsb)

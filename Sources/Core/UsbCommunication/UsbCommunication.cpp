@@ -7,13 +7,6 @@
 
 #include "UsbCommunication.hpp"
 
-#include "DroneDevice/PayloadProtocol/SerialHandler.hpp"
-#include "DroneDevice/StaticDeviceHub.hpp"
-#include "DroneDevice/InternalDevice/InternalDevice.hpp"
-#include "DroneDevice/InternalDevice/FieldList.hpp"
-#include "DroneDevice/InternalDevice/VolatileField.hpp"
-#include "DroneDevice/DeviceObserver.hpp"
-
 UsbCommunication::UsbCommunication() : 
     method(ConnectionMethod::NONE),
     vid(0),
@@ -259,23 +252,23 @@ bool UsbCommunication::waitForReadyRead(size_t aMs)
 
 void UsbCommunication::initPayloadProtocol(UsbCommunication& aUsb)
 {
-    // Device::DeviceId address{1};
-    // Device::InternalDevice node{"LocusUtility"};
+    Device::DeviceId address{1};
+    Device::InternalDevice node{"LocusUtility"};
 
-    // uint8_t rxDataSize = 0;
-    // uint8_t rxBuffer[sizeof(decltype(rxDataSize))];
+    uint8_t rxDataSize = 0;
+    uint8_t rxBuffer[sizeof(decltype(rxDataSize))];
 
-    // auto deviceHubHandler = Device::makeStaticDeviceHub(Device::makeDynamicHubNode(&node, address));
+    auto deviceHubHandler = Device::makeStaticDeviceHub(Device::makeDynamicHubNode(&node, address));
 
-	// auto payloadStreamHandler = new PayloadProtocol::SerialHandler<
-	// 		kMaxPacketLength, decltype(deviceHubHandler),
-	// 		decltype(aUsb), FastCrc8>
-	// 		(deviceHubHandler, aUsb);
+	auto payloadStreamHandler = new PayloadProtocol::SerialHandler<
+			kMaxPacketLength, decltype(deviceHubHandler),
+			decltype(aUsb), FastCrc8>
+			(deviceHubHandler, aUsb);
 
-    // using SerialType = decltype(aUsb);
-	// using HandlerType = decltype(*payloadStreamHandler);
+    using SerialType = decltype(aUsb);
+	using HandlerType = decltype(*payloadStreamHandler);
     
-    // auto serialListener = new PayloadProtocol::SerialListener<SerialType, HandlerType>(aUsb, *payloadStreamHandler);
+    auto serialListener = new PayloadProtocol::SerialListener<SerialType, HandlerType>(aUsb, *payloadStreamHandler);
     
-    // payloadStreamHandler->update(rxBuffer, rxDataSize);
+    payloadStreamHandler->update(rxBuffer, rxDataSize);
 }

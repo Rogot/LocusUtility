@@ -12,9 +12,12 @@
 #include "Core/UsbCommunication/SystemSerial/SystemSerial.hpp"
 #include "Core/UsbCommunication/SerialListener.hpp"
 
-// #include <DroneDevice/Include/DroneDevice/DeviceObserver.hpp>
-// #include "DroneDevice/DeviceObserver.hpp"
-// #include <DroneDevice/DeviceObserver.hpp>
+#include "DroneDevice/PayloadProtocol/SerialHandler.hpp"
+#include "DroneDevice/StaticDeviceHub.hpp"
+#include "DroneDevice/InternalDevice/InternalDevice.hpp"
+#include "DroneDevice/InternalDevice/FieldList.hpp"
+#include "DroneDevice/InternalDevice/VolatileField.hpp"
+#include "DroneDevice/DeviceObserver.hpp"
 
 
 #define DEBUG       true
