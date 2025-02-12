@@ -150,6 +150,9 @@ public:
 	 */
 
     GlobalHandlerEvents::HandlerEventsStatus connect();
+
+    void setUsbConnetctionPtr(UsbCommunication &aUsbPtr);
+
 protected:
     /**
 	 * @brief Set standard values for an object of the MenuBar class
@@ -206,7 +209,7 @@ private:
 
 private:
     Gtk::Window *ownerWindow;
-    UsbCommunication usbCommunication;
+    UsbCommunication *usbCommunication;
 
 private:
     std::vector<std::string> portsList;

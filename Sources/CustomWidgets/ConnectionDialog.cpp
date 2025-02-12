@@ -16,6 +16,7 @@ ConnectionDialog::ConnectionDialog(BaseObjectType* aCobject, const Glib::RefPtr<
     currentPage(0),
     idPid(0),
     idVid(0),
+    usbCommunication{nullptr},
     is_connected(false)
 {
     set_title("Connection");
@@ -210,6 +211,7 @@ void ConnectionDialog::definitionDefaultValues()
         });
     }
 
+        
     if (dialogConnectButton) {
         /**
         * @brief Connect to USB device
@@ -294,6 +296,10 @@ void ConnectionDialog::definitionDefaultValues()
 
 GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::connect()
 {
+    if (!usbCommunication) {
+        return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
+    }
+
     #ifdef __linux__
     std::string portName;
     struct stat sb;
@@ -304,16 +310,16 @@ GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::connect()
         }
 
         if (currentPage == static_cast<int>(Pages::VID_PID_PAGE)) {
-            usbCommunication.setVid(idVid);
-            usbCommunication.setPid(idPid);
+            usbCommunication->setVid(idVid);
+            usbCommunication->setPid(idPid);
 
-            if (usbCommunication.connect(UsbCommunication::ConnectionMethod::USB) != UsbCommunication::UsbResult::SUCCESS) {
+            if (usbCommunication->connect(UsbCommunication::ConnectionMethod::USB) != UsbCommunication::UsbResult::SUCCESS) {
                 return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
             }
         } else if (currentPage == static_cast<int>(Pages::COM_PAGE)) {
-            usbCommunication.setPortName(portName);
+            usbCommunication->setPortName(portName);
 
-            if (usbCommunication.connect(UsbCommunication::ConnectionMethod::COM) != UsbCommunication::UsbResult::SUCCESS) {
+            if (usbCommunication->connect(UsbCommunication::ConnectionMethod::COM) != UsbCommunication::UsbResult::SUCCESS) {
                 return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
             }
         }
@@ -329,8 +335,12 @@ GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::connect()
 
 GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::disconnect()
 {   
+    if (!usbCommunication) {
+        return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
+    }
+    
     if (is_connected) {
-        if (usbCommunication.disconnect() != UsbCommunication::UsbResult::SUCCESS) {
+        if (usbCommunication->disconnect() != UsbCommunication::UsbResult::SUCCESS) {
             return GlobalHandlerEvents::HandlerEventsStatus::ERROR_HANDLER;
         }
 
@@ -341,8 +351,12 @@ GlobalHandlerEvents::HandlerEventsStatus ConnectionDialog::disconnect()
 
 void ConnectionDialog::resetUsbList(std::vector<std::string> &aPortList)
 {
-    usbCommunication.toDetermineDevices(UsbCommunication::ConnectionMethod::COM);
-    aPortList = usbCommunication.getPortList();
+    if (!usbCommunication) {
+        return;
+    }
+
+    usbCommunication->toDetermineDevices(UsbCommunication::ConnectionMethod::COM);
+    aPortList = usbCommunication->getPortList();
     if (portsListComboTextBox) {
         portsListComboTextBox->remove_all(); 
         if (aPortList.size()) {
@@ -361,6 +375,12 @@ void ConnectionDialog::resetUsbList(std::vector<std::string> &aPortList)
 void ConnectionDialog::setOwner(Gtk::Window *aOwner)
 {
     ownerWindow = aOwner;
+}
+
+void ConnectionDialog::setUsbConnetctionPtr(UsbCommunication &aUsbPtr) 
+{
+    usbCommunication = &aUsbPtr;
+    resetUsbList(portsList); 
 }
 
 } // LocusBiaconWidgets

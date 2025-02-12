@@ -25,9 +25,10 @@ namespace UsbTypes {
         TransferErrorStatus status;
         size_t bytesTransfered;
 
-        TransferStatus operator=(const TransferStatus& rhs)
+        void operator=(const TransferStatus& rhs)
         {
-            return TransferStatus{rhs.status, rhs.bytesTransfered};
+            this->status = rhs.status;
+            this->bytesTransfered = rhs.bytesTransfered;
         }
     };
 

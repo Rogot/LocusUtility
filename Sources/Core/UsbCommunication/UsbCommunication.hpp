@@ -8,9 +8,11 @@
 #ifndef SOURCES_CORE_USBCOMMUNICATION_USBCOMMUNICATION_HPP_
 #define SOURCES_CORE_USBCOMMUNICATION_USBCOMMUNICATION_HPP_
 
+#include <chrono>
+
 #include "Core/UsbCommunication/CUsb/CUsb.hpp"
 #include "Core/UsbCommunication/SystemSerial/SystemSerial.hpp"
-#include "Core/UsbCommunication/SerialListener.hpp"
+#include "Core/UsbCommunication/Payload/SerialListener.hpp"
 
 #include "DroneDevice/PayloadProtocol/SerialHandler.hpp"
 #include "DroneDevice/StaticDeviceHub.hpp"
@@ -25,7 +27,6 @@
 class UsbCommunication {
 private:
     static constexpr size_t kMaxPacketLength{256};
-    // static constexpr uint8_t address{1};
 
 public:
     enum class ConnectionMethod {
@@ -95,12 +96,12 @@ public:
 
     bool waitForReadyRead(size_t aMs);
 
-    static void initPayloadProtocol(UsbCommunication& aUsb);
+    void initPayloadProtocol();
 
     /* USB connection functions */
     void setVid(int aVid) { vid = aVid; }
     void setPid(int aPid) { pid = aPid; }
-    libusb_device *getUsbList() { return devices; }
+    libusb_device *getUsbList() { return usb.getDeviceList(); }
 
     /* Serial Port connection functions */
     void setPortName(std::string& aPortName) { portName = aPortName; }
@@ -156,12 +157,14 @@ private:
     /* USB connection variable */
     int vid;
     int pid;
-    // std::shared_ptr<libusb_device> devices; 
-    libusb_device *devices;
 
     /* COM connection variable */
     std::string portName;
     std::vector<std::string> portList;
+
+    /* Payload */
+    Device::InternalDevice node;
+    Device::DeviceId address{1};
 };
 
 #endif // SOURCES_CORE_USBCOMMUNICATION_USBCOMMUNICATION_HPP_

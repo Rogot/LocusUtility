@@ -4,8 +4,6 @@ project(LocusBeaconUtility
     DESCRIPTION "A cross-platform dekstop application for Locus"
     LANGUAGES CXX C)
 
-    set(CMAKE_VERBOSE_MAKEFILE ON)
-
 # if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 include(FindPkgConfig)
 if(PKG_CONFIG_FOUND)

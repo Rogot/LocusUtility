@@ -125,6 +125,10 @@ void MainWindow::initGlobalHandlersEvents()
         HandlersFuncKeys handleKey = HandlersFuncKeys::SEARCH_FILE_ESP32;
         return this->searchFile(handleKey);
     });
+
+    globalHandlers.addHandler(HandlersFuncKeys::UPLOAD_FIRMWARE, [this]() {
+        return this->uploadFirmware();
+    });
 }
 
 GlobalHandlerEvents::HandlerEventsStatus MainWindow::changeLanguage() 
@@ -156,8 +160,10 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::connect()
     std::cout << "Connect USB Device" << std::endl;
     #endif
     if (connectionDialog) { 
-        connectionDialog->show();
+        connectionDialog->setUsbConnetctionPtr(usbCommunication);
         connectionDialog->setOwner(this);
+        connectionDialog->show();
+
         set_sensitive(false);
 
         return GlobalHandlerEvents::HandlerEventsStatus::HANDLED;
@@ -228,4 +234,9 @@ GlobalHandlerEvents::HandlerEventsStatus MainWindow::searchFile(HandlersFuncKeys
     openFileDialog->hide();
 
     return GlobalHandlerEvents::HandlerEventsStatus::HANDLED;
+}
+
+GlobalHandlerEvents::HandlerEventsStatus MainWindow::uploadFirmware()
+{
+    usbCommunication.initPayloadProtocol();
 }

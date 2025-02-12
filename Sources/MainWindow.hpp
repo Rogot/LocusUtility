@@ -56,7 +56,7 @@ private:
     /**
 	 * @brief Function for changing language in all app
 	 *
-	 * @return None
+	 * @return HandlerEventsStatus: any error is "ERROR_HANDLER", succes is "HANDLED"
 	 */
 
     GlobalHandlerEvents::HandlerEventsStatus changeLanguage();
@@ -64,7 +64,7 @@ private:
     /**
 	 * @brief Function for closing app
 	 *
-	 * @return None
+	 * @return HandlerEventsStatus: any error is "ERROR_HANDLER", succes is "HANDLED"
 	 */
 
     GlobalHandlerEvents::HandlerEventsStatus quitApp();
@@ -72,7 +72,7 @@ private:
     /**
 	 * @brief Function for connect via USB
 	 *
-	 * @return None
+	 * @return HandlerEventsStatus: any error is "ERROR_HANDLER", succes is "HANDLED"
 	 */
 
     GlobalHandlerEvents::HandlerEventsStatus connect();
@@ -80,7 +80,7 @@ private:
     /**
 	 * @brief Function for USB disconnect
 	 *
-	 * @return None
+	 * @return HandlerEventsStatus: any error is "ERROR_HANDLER", succes is "HANDLED"
 	 */
 
     GlobalHandlerEvents::HandlerEventsStatus disconnect();
@@ -88,7 +88,7 @@ private:
 	/**
 	 * @brief Function for enable/disable sensitive ESP32/STM32 search/download functions
 	 *
-	 * @return None
+	 * @return HandlerEventsStatus: any error is "ERROR_HANDLER", succes is "HANDLED"
 	 */
 
     GlobalHandlerEvents::HandlerEventsStatus selectEsp32();
@@ -96,7 +96,7 @@ private:
 	/**
 	 * @brief Function for disable sensitive STM32/ESP32 search/download functions
 	 *
-	 * @return None
+	 * @return HandlerEventsStatus: any error is "ERROR_HANDLER", succes is "HANDLED"
 	 */
 
     GlobalHandlerEvents::HandlerEventsStatus selectStm32();
@@ -104,10 +104,18 @@ private:
 	/**
 	 * @brief Function for open search dialog window
 	 *
-	 * @return None
+	 * @return HandlerEventsStatus: any error is "ERROR_HANDLER", succes is "HANDLED"
 	 */
 
     GlobalHandlerEvents::HandlerEventsStatus searchFile(HandlersFuncKeys &aKey);
+
+	/**
+	 * @brief Function for uploadFirmware
+	 *
+	 * @return HandlerEventsStatus: any error is "ERROR_HANDLER", succes is "HANDLED"
+	 */
+
+    GlobalHandlerEvents::HandlerEventsStatus uploadFirmware();
 
 private:
 	/**
@@ -120,6 +128,7 @@ private:
 
 private:
     GlobalHandlerEvents globalHandlers;
+	UsbCommunication usbCommunication;
     Glib::RefPtr<Gtk::Application> perentApp;
     Glib::RefPtr<Gtk::Builder> refBuilder;
 

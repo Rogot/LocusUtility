@@ -56,15 +56,11 @@ void FirmwareMethodBox::definitionDefaultValues()
         methodSelector->set_active(0);
 
         methodSelector->signal_changed().connect([&]() {
-            if (kDefaultMethodsList[0] == methodSelector->get_active_text()) {
-                globalEvents->executeHandler(HandlersFuncKeys::SELECT_STM32);
-            } else if (kDefaultMethodsList[1] == methodSelector->get_active_text()) {
-                globalEvents->executeHandler(HandlersFuncKeys::SELECT_ESP32);
-            }
+            this->setActiveMethod();
         });
 
         uploadButton->signal_clicked().connect([&]() {
-            
+            this->upload();
         });
     }
 }
@@ -91,6 +87,20 @@ void FirmwareMethodBox::redefinitionLabeles()
     if (uploadButton) {
         uploadButton->set_label(kCurrentFirmwareMethodText->at(FirmwareMethodText::UPLOAD_BUTTON).c_str());
     }
+}
+
+void FirmwareMethodBox::setActiveMethod()
+{
+    if (kDefaultMethodsList[0] == methodSelector->get_active_text()) {  
+        globalEvents->executeHandler(HandlersFuncKeys::SELECT_STM32);
+    } else if (kDefaultMethodsList[1] == methodSelector->get_active_text()) {
+        globalEvents->executeHandler(HandlersFuncKeys::SELECT_ESP32);
+    }
+}
+
+void FirmwareMethodBox::upload()
+{
+    globalEvents->executeHandler(HandlersFuncKeys::UPLOAD_FIRMWARE);
 }
 
 } // LocusBiacon

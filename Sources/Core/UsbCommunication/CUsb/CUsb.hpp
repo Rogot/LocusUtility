@@ -32,6 +32,7 @@ public:
      * @param [aPid] - Product ID of the USB device
 	 * @return Connecting status: true is "OK", false is "Error"
 	 */
+
     bool connectToDevice(int aVid, int aPid);
     
     /**
@@ -39,14 +40,24 @@ public:
 	 * 
 	 * @return Disconnecting status: true is "OK", false is "Error"
 	 */
+
     bool disconnectFromDevice();
 
-    /**
+	/**
 	 * @brief Print USB information in consol
 	 * 
 	 * @return USB list
 	 */
+
     libusb_device *getDeviceList();
+
+	/**
+	 * @brief Determine fullness of the list
+	 * 
+	 * @return Fullness status: true is "Empty", other is more than 0
+	 */
+
+	bool isDeviceListEmpty();
 
 private:
     /**
@@ -54,6 +65,7 @@ private:
 	 * 
 	 * @return None
 	 */
+	
     void printDeviceList(libusb_device *aDevs_list, libusb_device_descriptor aDesc);
 
 protected:

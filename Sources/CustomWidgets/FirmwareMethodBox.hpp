@@ -60,6 +60,7 @@ public:
 	 *
 	 * @return None
 	 */
+
     void redefinitionLabeles();
 
     /**
@@ -68,7 +69,24 @@ public:
      * @param [aGlobalEvents] Global handler event object
 	 * @return None
 	 */
+
     void setGlobalHandlerEvents(GlobalHandlerEvents &aGlobalEvents) { globalEvents = &aGlobalEvents; }
+    
+    /**
+	 * @brief Set device for download firmware
+	 *
+	 * @return None
+	 */
+
+    void setActiveMethod();
+
+    /**
+	 * @brief Upload frimware
+	 *
+	 * @return None
+	 */
+
+    void upload();
 
 protected:
     /**

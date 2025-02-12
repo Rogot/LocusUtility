@@ -79,6 +79,17 @@ bool CUsb::disconnectFromDevice()
     return false;
 }
 
+bool CUsb::isDeviceListEmpty()
+{
+    libusb_device *devices = getDeviceList();
+
+    if (devices) {
+        return false;
+    }
+
+    return true;
+}
+
 libusb_device *CUsb::getDeviceList()
 {
     size_t cnt = libusb_get_device_list(context, &devs_list);

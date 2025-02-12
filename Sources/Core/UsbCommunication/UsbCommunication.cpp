@@ -9,19 +9,18 @@
 
 UsbCommunication::UsbCommunication() : 
     method(ConnectionMethod::NONE),
+    node("LocusBeaconUtility"),
+    usb{},
     vid(0),
     pid(0),
-    portName(""),
-    devices(nullptr)
+    portName("")
 {
-    initPayloadProtocol(*this);
+
 }
 
 UsbCommunication::~UsbCommunication()
 {
-    if (devices) {
-        delete devices;
-    }
+
 }
 
 UsbCommunication::UsbResult UsbCommunication::connect(ConnectionMethod aMethod)
@@ -105,16 +104,15 @@ UsbCommunication::UsbResult UsbCommunication::disconnect()
 
 UsbCommunication::UsbResult UsbCommunication::toDetermineDevices(ConnectionMethod aMethod)
 {
+
+    bool status;
+
     switch (aMethod)
     {
     case ConnectionMethod::USB:
-        if (devices) {
-            delete devices;
-        }
-        
-        devices = usb.getDeviceList();
-        
-        if (!devices) {
+        status = usb.isDeviceListEmpty();
+
+        if (status) {
             #if DEBUG
             std::cout << "Device USB list is empty" << std::endl;
             #endif
@@ -170,7 +168,6 @@ UsbTypes::TransferErrorStatus UsbCommunication::write(uint8_t *aBuffer, size_t a
         #if DEBUG
         std::cout << "Method didn't choose" << std::endl;
         #endif
-        return status;
         break;
     }
 
@@ -203,7 +200,6 @@ UsbTypes::TransferStatus UsbCommunication::read(uint8_t *aBuffer, size_t aLength
         #if DEBUG
         std::cout << "Method didn't choose" << std::endl;
         #endif
-        return status;
         break;
     }
 
@@ -239,6 +235,7 @@ UsbTypes::TransferStatus UsbCommunication::readDataComImpl(uint8_t *aBuffer, siz
 
     if (transferStatus.status > UsbTypes::TransferErrorStatus::SUCCESS || !transferStatus.bytesTransfered) {
         transferStatus.status = UsbTypes::TransferErrorStatus::ERROR_RECEIVE_DATA;
+        transferStatus.bytesTransfered = 0;
         return transferStatus;
     }
 
@@ -247,28 +244,20 @@ UsbTypes::TransferStatus UsbCommunication::readDataComImpl(uint8_t *aBuffer, siz
 
 bool UsbCommunication::waitForReadyRead(size_t aMs)
 {
+    // std::chrono::sleep_until(std::chrono::system_clock::now() + std::chrono::milliseconds(aMs));
     return true;
 }
 
-void UsbCommunication::initPayloadProtocol(UsbCommunication& aUsb)
+void UsbCommunication::initPayloadProtocol()
 {
-    Device::DeviceId address{1};
-    Device::InternalDevice node{"LocusUtility"};
-
-    uint8_t rxDataSize = 0;
-    uint8_t rxBuffer[sizeof(decltype(rxDataSize))];
-
     auto deviceHubHandler = Device::makeStaticDeviceHub(Device::makeDynamicHubNode(&node, address));
 
-	auto payloadStreamHandler = new PayloadProtocol::SerialHandler<
-			kMaxPacketLength, decltype(deviceHubHandler),
-			decltype(aUsb), FastCrc8>
-			(deviceHubHandler, aUsb);
+    auto payloadStreamHandler = new PayloadProtocol::SerialHandler<
+        kMaxPacketLength, decltype(deviceHubHandler),
+        decltype(*this), FastCrc8> (deviceHubHandler, *this);
 
-    using SerialType = decltype(aUsb);
+    using SerialType = decltype(*this);
 	using HandlerType = decltype(*payloadStreamHandler);
     
-    auto serialListener = new PayloadProtocol::SerialListener<SerialType, HandlerType>(aUsb, *payloadStreamHandler);
-    
-    payloadStreamHandler->update(rxBuffer, rxDataSize);
+    auto serialListener = new PayloadProtocol::SerialListener<SerialType, HandlerType>(*this, *payloadStreamHandler);
 }
